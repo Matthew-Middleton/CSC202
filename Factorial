@@ -1,3 +1,4 @@
+//Java file
 public class Factorial
 {
 	public Factorial()
