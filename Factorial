@@ -6,7 +6,7 @@ public class Factorial
 		
 	}
 	/**Performs a recursive factorial
-	 * stack overflow occurs around n=50
+	 * stack overflow occurs around n>30
 	 * @param n
 	 * @return
 	 * @throws StackOverflowError
