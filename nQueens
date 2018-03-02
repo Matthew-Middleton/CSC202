@@ -3,10 +3,9 @@
  * If the number of the queens on a board is equal to the size of the board return true. Once that is done, iterate over
  * the boards to check which is and is not a solution.
  * Complexity: O(n!*2)
- * 
  */
-package nQueens;
-import operations.Factorial;
+package queensBoard;
+import math.Factorial;
 
 public class NQueens
 {
@@ -15,6 +14,7 @@ public class NQueens
 	private String qBoard[][];
 	private Object queenie[];
 	private Factorial fact = new Factorial();
+	int s = 0;
 	
 	public NQueens()
 	{
@@ -31,9 +31,10 @@ public class NQueens
 	//think about putting all of the checked values into an array and then check over that array
 	public void printEm(int attack[])
 	{
+		System.out.println("Solution " + (++s));
 		for(int i=0; i<size; i++)
 		{
-			for(int j=0; j<size; j++)
+			for(int j=0; j<size; j++)//if using solveEm() set j=1 and j<=size
 				{
 					if(attack[i]==j)
 						System.out.print(" Q ");
@@ -83,28 +84,70 @@ public class NQueens
 		}
 		return true;
 	}
-	/**Implements the nQueens method that solves for the nQueens problem
+	/**Checks if the points on the board are attacked
+	 * @param y
+	 * @return
+	 */
+	public boolean unsafe(int y)
+	{
+		int x = attack[y];
+		for(int i=1; i<=y; i++)
+		{
+			int t = attack[y-i];
+			if(t==x||t==x-i||t==x+i)//checks other points to see if they are unsafe
+				return true;
+		}
+		return false;
+	}
+	/**Implements the iterative/recursive method that solves for the nQueens problem
 	 */
 	public void nQueensSolve()
 	{
 		attack = new int[size];
-		nQueensSolve(0, attack);
+		nQueensSolveRec(0,attack);
+		//nQueensIter(0,attack);
 	}
 	/**Sorts through and prints all possible combinations of nQueens
 	 */
-	public void nQueensSolve(int i, int attack[])
+	public void nQueensSolveRec(int i, int attack[])
 	{
 		if(i==size)
-			//printEm(attack);for printing all the possible solutions; takes time as the size increases due to n!
-			;
+			printEm(attack);//for printing all the possible solutions; takes time as the size increases due to n!
+			//;
 		else
 			for(int q=0; q<size; q++)
 			{
 				//put in a backtracking check or a board check
 				attack[i] = q;
-				if(checkSafety(i,attack)==true)
-					nQueensSolve(i+1,attack);
+				if(attack[i]<size&&checkSafety(i,attack)==true)
+					nQueensSolveRec(i+1,attack);
 			}
+	}
+	/**Solves the nQueens problem
+	 * iterative solution
+	 * @param i
+	 * @param attack
+	 */
+	public void nQueensIter(int i, int attack[])
+	{
+		i = 0;
+		attack[0] = -1;
+		while(i>=0)
+		{
+			do
+			{
+				attack[i]++;//advances the point on the board
+			}while(attack[i]<size&&unsafe(i));//checks if within bounds and each piece is safe
+			if(attack[i]<size)
+			{
+				if(i<size-1)
+					attack[++i] = -1;//sets the queen on the spot
+				else
+					printEm(attack);
+			}
+			else
+				i--;
+		}
 	}
 	/*Sets the size for an n-sized board
 	 */
@@ -125,3 +168,4 @@ public class NQueens
 		return attack;
 	}
 }
+
