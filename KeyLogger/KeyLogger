@@ -3,49 +3,54 @@
  */
 package keylogger;
 import java.io.*;
-@SuppressWarnings("unused")
+//need to add a method if there already exists a file and maybe create a random fileName generator
 public class KeyLogger
 {
-	private Data data;
+	private String data;
 	private ObjectOutputStream outStream = null;
+	@SuppressWarnings("unused")
 	private ObjectInputStream inStream = null;
-	private File file = new File("keysLogged.dat");
+	private String fileName = "keysLogged.dat";
 	
 	public KeyLogger()
 	{
 		
 	}
 	
-	public KeyLogger(Data keysLogged)
+	public KeyLogger(String keysLogged)
 	{
 		this.data = keysLogged;
 	}
 	/**Logs keys and translates them into a stream to store in a binary data file
 	 * @param data
 	 */
-	//need to think of how to treat char data and convert into binary
-	private void takeStream(Data data)
+	public void takeStream(String data)
 	{
 		try
 		{
-			outStream = new ObjectOutputStream(new FileOutputStream("keysLogged.dat"));
+			outStream = new ObjectOutputStream(new FileOutputStream(fileName));
+			outStream.writeChars(data);
+		}
+		catch(FileNotFoundException fnf)
+		{
+			System.out.println("Error finding file " + fileName);
 		}
 		catch(IOException ioe)
 		{
-			
+			System.out.println("Error outputting file to " + fileName);
 		}
 	}
 	/**Sets the data to be input into a stream
 	 * @param keysLogged
 	 */
-	public void setData(Data keysLogged)
+	public void setData(String keysLogged)
 	{
 		this.data = keysLogged;
 	}
 	/**Returns
 	 * @return
 	 */
-	public Data getData()
+	public String getData()
 	{
 		return data;
 	}
