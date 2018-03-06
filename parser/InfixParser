@@ -1,0 +1,92 @@
+/**Purpose: To convert an in-fix expression to a post-fix
+ * Algorithm: Take an expression and remove any whitespace. Then, juxtapose the position of the numbers and the operators so that
+ * changes from number operator number to reading as number number operator. Treat any other operator using the PEMDAS standard.
+ *"Separate" the linked list by groups of three and switch the second and third positions
+ */
+package parser;
+import java.util.LinkedList;
+import java.util.regex.Pattern;
+@SuppressWarnings("unused")
+public class InfixParser
+{
+	private LinkedList<String> list = new LinkedList<String>();
+	private Pattern operator = Pattern.compile("[\\+.\\-.\\*.\\/.]");
+	private Pattern number = Pattern.compile("[0-9]");
+	private String expression = null;
+	
+	public InfixParser()
+	{
+		
+	}
+	
+	public InfixParser(String expression)
+	{
+		this.expression = expression;
+		removeWhiteSpace(expression);
+	}
+	/**Implements the rearrangeExpression
+	 */
+	public String parse()
+	{
+		return rearrangeExpression(0);
+	}
+	/**Recursively sorts the list from in-fix to post-fix
+	 * @param i
+	 * @return
+	 */
+	public String rearrangeExpression(int i)
+	{
+		String x = "";
+		String x2 = "";
+		if(i>=expression.length())
+			return expression;
+		else
+		{
+			if(number.matcher(expression.subSequence(i, i++)).matches()==false)
+			{
+				//check to see if there is a number followed by an operator then switch the two
+				x = expression.substring(i, i++);
+				return rearrangeExpression(i+5);
+			}
+			else
+			{
+				return rearrangeExpression(i++);
+			}
+			
+		}
+	}
+	/**Removes any white space from an expression
+	 */
+	private void removeWhiteSpace(String expression)
+	{
+		expression = expression.replaceAll("\\s", "");
+	}
+	/**Creates a linked list from a mathematical expression
+	 * @param expression
+	 * @return
+	 */
+	public LinkedList<String> createList(String expression)
+	{
+		int i = 0;
+		while(i<expression.length())
+		{
+			list.add(expression.substring(i, i++));
+			i++;
+		}
+		return list;
+	}
+	/**Sets the expression and removes the whitespace from it
+	 * @param expression
+	 */
+	public void setExpression(String expression)
+	{
+		this.expression = expression;
+		removeWhiteSpace(expression);
+	}
+	/**Returns the mathematical expression
+	 */
+	public String getString()
+	{
+		return expression;
+	}
+}
