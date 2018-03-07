@@ -1,4 +1,4 @@
-/**Purpose: To convert an in-fix expression to a post-fix
+/**Purpose: To convert an in-fix expression to a post-fix expression
  * Algorithm: Take an expression and remove any whitespace. Then, juxtapose the position of the numbers and the operators so that
  * changes from number operator number to reading as number number operator. Treat any other operator using the PEMDAS standard.
  *"Separate" the linked list by groups of three and switch the second and third positions
@@ -6,13 +6,17 @@
 package parser;
 import java.util.LinkedList;
 import java.util.regex.Pattern;
-@SuppressWarnings("unused")
+import java.util.Scanner;
 public class InfixParser
 {
 	private LinkedList<String> list = new LinkedList<String>();
+	@SuppressWarnings("unused")
 	private Pattern operator = Pattern.compile("[\\+.\\-.\\*.\\/.]");
+	@SuppressWarnings("unused")
 	private Pattern number = Pattern.compile("[0-9]");
 	private String expression = null;
+	@SuppressWarnings("unused")
+	private Scanner scan = null;
 	
 	public InfixParser()
 	{
@@ -21,45 +25,39 @@ public class InfixParser
 	
 	public InfixParser(String expression)
 	{
-		this.expression = expression;
-		removeWhiteSpace(expression);
+		this.expression = removeWhiteSpace(expression);
+		
 	}
-	/**Implements the rearrangeExpression
+	/**Implements rearrangeExpression()
 	 */
-	public String parse()
+	public LinkedList<String> parse()
 	{
-		return rearrangeExpression(0);
+		list = createList(expression);
+		return parse(0, list);
 	}
 	/**Recursively sorts the list from in-fix to post-fix
 	 * @param i
 	 * @return
 	 */
-	public String rearrangeExpression(int i)
+	//add condition for more than one operation and parenthetical operators as well
+	public LinkedList<String> parse(int i, LinkedList<String> list)
 	{
-		String x = "";
-		String x2 = "";
-		if(i>=expression.length())
-			return expression;
+		String op = "";
+		if(i>=list.size())
+			return list;
 		else
 		{
-			if(number.matcher(expression.subSequence(i, i++)).matches()==false)
-			{
-				//check to see if there is a number followed by an operator then switch the two
-				x = expression.substring(i, i++);
-				return rearrangeExpression(i+5);
-			}
-			else
-			{
-				return rearrangeExpression(i++);
-			}
-			
+			op = list.get(i+1);
+			list.remove(op);
+			list.add(i+2, op);
+			return parse(i+3, list);
 		}
 	}
 	/**Removes any white space from an expression
 	 */
-	private void removeWhiteSpace(String expression)
+	private String removeWhiteSpace(String expression)
 	{
-		expression = expression.replaceAll("\\s", "");
+		return expression.replaceAll("\\s", "");
 	}
 	/**Creates a linked list from a mathematical expression
 	 * @param expression
@@ -67,12 +65,8 @@ public class InfixParser
 	 */
 	public LinkedList<String> createList(String expression)
 	{
-		int i = 0;
-		while(i<expression.length())
-		{
-			list.add(expression.substring(i, i++));
-			i++;
-		}
+		for(int i=0; i<expression.length(); i++)
+			list.add(expression.substring(i, i+1));
 		return list;
 	}
 	/**Sets the expression and removes the whitespace from it
@@ -81,7 +75,6 @@ public class InfixParser
 	public void setExpression(String expression)
 	{
 		this.expression = expression;
-		removeWhiteSpace(expression);
 	}
 	/**Returns the mathematical expression
 	 */
