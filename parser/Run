@@ -1,0 +1,40 @@
+/************************************************\
+ * Purpose: To run the program to be used in the main
+ */
+package parser;
+import java.util.LinkedList;
+import java.util.Scanner;
+
+public class Run
+{
+	private Scanner input = new Scanner(System.in);
+	
+	public Run()
+	{
+		System.out.println(greeting());
+		run();
+	}
+	
+	private String greeting()
+	{
+		return "Enter an expression with infix format.\nEnter \"exit\" to stop the program.";
+	}
+	
+	private void run()
+	{
+		String expression = input.nextLine();
+		if(expression.equalsIgnoreCase("exit"))
+		{
+			System.exit(0);
+			System.out.println("ENDING PROGRAM");
+		}
+		InfixParser inp = new InfixParser(expression);
+		LinkedList<String> list = inp.parse();
+		System.out.println("Post-fix format:");
+		for(int i=0; i<list.size(); i++)
+			System.out.print(list.get(i));
+		System.out.println();
+		System.out.println("Enter another expression:");
+		run();
+	}
+}
