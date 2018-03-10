@@ -1,45 +1,52 @@
-/**Purpose: To convert an in-fix expression to a post-fix expression
+/********************************************************************************************************************************\
+ * Purpose: To convert an in-fix expression to a post-fix expression
  * Algorithm: Take an expression and remove any whitespace. Then, juxtapose the position of the numbers and the operators so that
  * changes from number operator number to reading as number number operator. Treat any other operator using the PEMDAS standard.
- *"Separate" the linked list by groups of three and switch the second and third positions
+ * "Separate" the linked list by groups of three and switch the second and third positions
  */
 package parser;
 import java.util.LinkedList;
 import java.util.regex.Pattern;
-import java.util.Scanner;
+
 public class InfixParser
 {
 	private LinkedList<String> list = new LinkedList<String>();
 	@SuppressWarnings("unused")
-	private Pattern operator = Pattern.compile("[\\+.\\-.\\*.\\/.]");
-	@SuppressWarnings("unused")
+	private Pattern parenthesis = Pattern.compile("[\\(.\\).]");
 	private Pattern number = Pattern.compile("[0-9]");
 	private String expression = null;
-	@SuppressWarnings("unused")
-	private Scanner scan = null;
-	
+	/**Constructor
+	 */
 	public InfixParser()
 	{
 		
 	}
-	
+	/**Constructor
+	 * @param expression
+	 */
 	public InfixParser(String expression)
 	{
 		this.expression = removeWhiteSpace(expression);
-		
 	}
 	/**Implements rearrangeExpression()
 	 */
 	public LinkedList<String> parse()
 	{
+		int start = 0;
 		list = createList(expression);
-		return parse(0, list);
+		if(list.get(0)=="(")
+			start = 0;
+		else
+			start = 1;
+		list = parse(start, list);
+		return list;
 	}
 	/**Recursively sorts the list from in-fix to post-fix
+	 * start at position 1 if no parenthesis, otherwise position 0
 	 * @param i
+	 * @param list
 	 * @return
 	 */
-	//add condition for more than one operation and parenthetical operators as well
 	public LinkedList<String> parse(int i, LinkedList<String> list)
 	{
 		String op = "";
@@ -47,17 +54,51 @@ public class InfixParser
 			return list;
 		else
 		{
-			op = list.get(i+1);
-			list.remove(op);
-			list.add(i+2, op);
-			return parse(i+3, list);
+			//expand on condition for parenthetical operator
+			//must expand past first set of operators
+			if(number.matcher(list.get(i)).matches())
+			{
+				return parse(i+1, list);
+			}
+			else
+			{
+				//works for MDAS of PEMDAS
+				op = list.get(i+1);//works for odd numbered sets
+				list.remove(op);
+				list.add(i+2, op);
+				return parse(i+2, list);
+				/*op = list.get(i);//works for numbers and operators only
+				list.remove(op);
+				list.add(i+1, op);
+				return parse(i+2, list);*/
+				 
+			}
 		}
 	}
-	/**Removes any white space from an expression
+	/**Searches for a set of parenthesis, returns the index where the next parenthesis is, otherwise returns same index
+	 * @param i
+	 * @param list
+	 * @return
 	 */
-	private String removeWhiteSpace(String expression)
+	public int searchPair(int i, LinkedList<String> list)
+	{
+		return 0;
+	}
+	/**Removes any white space from an expression
+	 * @param expression
+	 * @return
+	 */
+	public String removeWhiteSpace(String expression)
 	{
 		return expression.replaceAll("\\s", "");
+	}
+	/**Removes any parenthetical notation from an expression
+	 * @param expression
+	 * @return
+	 */
+	public String removeParenthesis(String expression)
+	{
+		return expression.replaceAll("[\\(.\\).]", "");
 	}
 	/**Creates a linked list from a mathematical expression
 	 * @param expression
@@ -65,11 +106,12 @@ public class InfixParser
 	 */
 	public LinkedList<String> createList(String expression)
 	{
+		
 		for(int i=0; i<expression.length(); i++)
 			list.add(expression.substring(i, i+1));
 		return list;
 	}
-	/**Sets the expression and removes the whitespace from it
+	/**Sets the mathematical expression
 	 * @param expression
 	 */
 	public void setExpression(String expression)
@@ -77,8 +119,9 @@ public class InfixParser
 		this.expression = expression;
 	}
 	/**Returns the mathematical expression
+	 * @return
 	 */
-	public String getString()
+	public String getExpression()
 	{
 		return expression;
 	}
