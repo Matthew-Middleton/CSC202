@@ -1,0 +1,194 @@
+/*****************************************************************************************************************\
+ * Solves a maze
+ * Algorithm: Obtain a maze that has been constructed. Starting from the beginning, keep going to the next element
+ * until the end is found. This works by marking prior values as visited and comparing valid and non-valid paths
+ */
+package maze;
+
+public class MazeSolve
+{
+	private int maze[][] = null;
+	private int length, width, begin, end;
+	private boolean been[][] = null;
+	private boolean validPath[][] = null;
+	
+	public MazeSolve()
+	{
+		
+	}
+	
+	public MazeSolve(int unsolvedMaze[][])
+	{
+		this.maze = unsolvedMaze;
+	}
+	
+	public MazeSolve(int unsolvedMaze[][], int y, int x, int start, int finish)
+	{
+		this.maze = unsolvedMaze;
+		this.length = y;
+		this.width = x;
+		this.begin = start;
+		this.end = finish;
+	}
+	
+	public int[][] mazeSolution()
+	{
+		solution();
+		for(int i=0; i<length; i++)
+			for(int j=0; j<width; j++)
+				if(validPath[i][j]==true)
+					maze[i][j] = 7;
+		return maze;
+	}
+	/*Returns the solution to the maze
+	 */
+	public void solution()
+	{
+		been = new boolean[length][width];
+		validPath = new boolean[length][width];
+		for(int i=0; i<length; i++)
+			for(int j=0; j<width; j++)
+			{
+				been[i][j] = false;
+				validPath[i][j] = false;
+			}
+		wayThrough(begin,0);
+	}
+	/*Moves through the maze by checking the next points within the maze as long as it is within the bounds
+	 */
+	private boolean wayThrough(int y, int x)
+	{
+		if(y==end&&x==width-1)//checks end point status
+			return true;
+		if(maze[y][x]==1||been[y][x])//checks if point has been visited or is it a wall
+			return false;
+		been[y][x] = true;
+		if(y!=0)
+			if(wayThrough(y-1,x))
+			{
+				validPath[y][x] = true;
+				return true;
+			}
+		if(y!=length-1)
+			if(wayThrough(y+1,x))
+			{
+				validPath[y][x] = true;
+					return true;
+			}
+		if(x!=0)
+			if(wayThrough(y,x-1))
+			{
+				validPath[y][x] = true;
+				return true;
+			}
+		if(x!=width-1)
+			if(wayThrough(y,x+1))
+			{
+				validPath[y][x] = true;
+				return true;
+			}
+		return false;
+	}
+	/*Checks if the current position is a dead end
+	 */
+	public boolean checkSurroundings(int y, int x)
+	{
+		int d = 0;
+		for(int i=0; i<3; i++)
+		{
+			if(maze[y][x]==0)
+			{
+				switch(i)
+				{
+				case 0:
+					if(maze[y-1][x]==1)
+						d += 1;
+					break;
+				case 1:
+					if(maze[y+1][x]==1)
+						d += 1;
+					break;
+				case 2:
+					if(maze[y][x-1]==1)
+						d += 1;
+					break;
+				case 3:
+					if(maze[y][x+1]==1)
+						d += 1;
+					break;
+				}
+			}
+		}
+		if(d==3)
+			return true;
+		else
+			return false;
+	}
+	/*Returns the element at the specified array coordinates.
+	 */
+	public int getMazeElement(int i, int j)
+	{
+		return maze[i][j];
+	}
+	/*Sets the unsolved maze
+	 */
+	public void setMaze(int unsolvedMaze[][])
+	{
+		this.maze = unsolvedMaze;
+	}
+	/*Returns the maze
+	 */
+	public int[][] getMaze()
+	{
+		return maze;
+	}
+	/*Sets the the length of the maze
+	 * 	
+	 */
+	public void setLength(int y)
+	{
+		this.length = y;
+	}
+	/*Returns the length(y-component) of the maze
+	 */
+	public int getLength()
+	{
+		return length;
+	}
+	/*Sets the width of the maze
+	 */
+	public void setWidth(int x)
+	{
+		this.width = x;
+	}
+	/*Returns the width(x-component) of the maze
+	 */
+	public int getWidth()
+	{
+		return width;
+	}
+	/*Sets the beginning x-component of the maze
+	 */
+	public void setBegin(int start)
+	{
+		this.begin = start;
+	}
+	/*Returns the beginning x-component of the maze
+	 */
+	public int getBegin()
+	{
+		return begin;
+	}
+	/*Sets the ending x-component of the maze
+	 */
+	public void setEnd(int finish)
+	{
+		this.end = finish;
+	}
+	/*Returns the ending x-component of the maze
+	 */
+	public int getEnd()
+	{
+		return end;
+	}
+}
