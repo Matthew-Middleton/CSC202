@@ -1,9 +1,10 @@
-/************************************************\
+/****************************************************\
  * Purpose: To run the program to be used in the main
  */
 package parser;
-import java.util.LinkedList;
 import java.util.Scanner;
+import java.util.LinkedList;
+import my_exceptions.UnbalancedException;
 
 public class Run
 {
@@ -11,16 +12,23 @@ public class Run
 	
 	public Run()
 	{
-		System.out.println(greeting());
-		run();
+		
 	}
 	
 	private String greeting()
 	{
 		return "Enter an expression with infix format.\nEnter \"exit\" to stop the program.";
 	}
-	
-	private void run()
+	/**Implements runner()
+	 */
+	public void run()
+	{
+		System.out.println(greeting());
+		runner();
+	}
+	/**Holds the routines for the program; to be called by run
+	 */
+	private void runner()
 	{
 		String expression = input.nextLine();
 		if(expression.equalsIgnoreCase("exit"))
@@ -29,12 +37,27 @@ public class Run
 			System.out.println("ENDING PROGRAM");
 		}
 		InfixParser inp = new InfixParser(expression);
-		LinkedList<String> list = inp.parse();
-		System.out.println("Post-fix format:");
-		for(int i=0; i<list.size(); i++)
-			System.out.print(list.get(i));
-		System.out.println();
-		System.out.println("Enter another expression:");
-		run();
+		try
+		{
+			if(inp.isBalanced(expression))
+			{
+				LinkedList<String> list = inp.parse();
+				System.out.println("Post-fix format:");
+				for(int i=0; i<list.size(); i++)
+					System.out.print(list.get(i));
+				System.out.println();
+				System.out.println("Enter another expression:");
+				runner();
+			}
+			else
+			{
+				throw new UnbalancedException();
+			}
+		}
+		catch(UnbalancedException unbalanced)
+		{
+			System.out.println(unbalanced.getMessage());
+			runner();
+		}
 	}
 }
