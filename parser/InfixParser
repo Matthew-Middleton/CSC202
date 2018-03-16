@@ -1,8 +1,9 @@
 /********************************************************************************************************************************\
  * Purpose: To convert an in-fix expression to a post-fix expression
- * Algorithm: Take an expression and remove any whitespace. Then, juxtapose the position of the numbers and the operators so that
- * changes from number operator number to reading as number number operator. Treat any other operator using the PEMDAS standard.
- * "Separate" the linked list by groups of three and switch the second and third positions
+ * Algorithm: Take an expression and remove any whitespace. Create an empty stack for operators and an empty list or an equivalent
+ * data structure for the post-fix expression. Iterate over the expression and push any operators on the stack. If it is a beginning
+ * parenthesis, push it on to the stack. If it is a ending parenthesis pop the stack until a beginning parenthesis is found.
+ * Establish a hierarchy for the operators. If any operators remain on the stack at the end append them to the end of the stack.
  */
 package parser;
 import java.util.LinkedList;
@@ -12,10 +13,8 @@ import java.util.Stack;
 public class InfixParser
 {
 	private LinkedList<String> list = new LinkedList<String>();
-	private LinkedList<String> outList = new LinkedList<String>();
 	private Stack<String> opStack = new Stack<String>();
 	private Stack<String> stack = new Stack<String>();
-	private Pattern operator = Pattern.compile("[\\+.\\-.\\*.\\/.]");
 	private Pattern number = Pattern.compile("[0-9]");
 	private String expression, op;
 	/**Constructor
@@ -36,95 +35,41 @@ public class InfixParser
 	public LinkedList<String> parse()
 	{
 		stack.clear();
-		return parse(0, expression, outList, opStack);
+		return parse(expression);
 	}
-	/**Recursively sorts the list from in-fix to post-fix
+	/**Iteratively sorts the list from in-fix to post-fix
 	 * @param i
 	 * @param list
 	 * @return
 	 */
 	//not finished
-	public LinkedList<String> parse(int i, String expression, LinkedList<String> outList, Stack<String> opStack)
+	public LinkedList<String> parse(String expression)
 	{
-		if(i>=expression.length())
-			return outList;
-		else
+		for(int i=0; i<expression.length(); i++)
 		{
-			if(expression.substring(i, i+1)=="(")
-			{
-				opStack.push(expression.substring(i, i+1));
-				return parse(i+1, expression, outList, opStack);
-			}
-			if(expression.substring(i, i+1)==")")
-			{
-				int p = 0;
-				do
-				{
-					opStack.pop();
-					p--;
-				}while(opStack.get(p)!="(");
-			}
 			if(number.matcher(expression.substring(i, i+1)).matches())
-			{
-				outList.add(expression.substring(i, i+1));
-				return parse(i+1, expression, outList, opStack);
-			}
-			if(operator.matcher(expression.substring(i,i+1)).matches())
-			{
-				if(opStack.empty()==false)
-					outList.add(opStack.pop());
+				list.add(expression.substring(i, i+1));
+			else if(expression.substring(i, i+1)=="(")
 				opStack.push(expression.substring(i, i+1));
-				return parse(i+1, expression, outList, opStack);
-			}
-			outList.add(opStack.pop());
-			return parse(i+1, expression, outList, opStack);
-		}
-	}
-	/**Recursively sorts the linked list by switching the index
-	 * @param i
-	 * @param list
-	 * @return
-	 */
-	//not finished
-	public LinkedList<String> parse(int i, LinkedList<String> list)
-	{
-		if(i>=list.size())
-			return list;//beginnings of the same project for switching around index
-		else
-		{
-			//must expand past first set of operators
-			if(number.matcher(list.get(i)).matches()==false)
-				return parse(i+1, list);
-			if(list.get(i)=="(")
-				pairSwitch(i, list);
-			op = list.get(i+1);
-			list.remove(op);
-			list.add(i+2, op);
-			return parse(i+2, list);
-		}
-	}
-	/**Finds a pair of parenthesis and takes the operator that occurred before the first parenthesis
-	 * and switches it with the latter parenthesis
-	 * @param i
-	 * @param list
-	 */
-	public void pairSwitch(int i, LinkedList<String> list)
-	{
-		stack.clear();
-		for(int j=i; j<list.size(); j++)
-		{
-			//index of the array is the index of the parenthesis in the expression
-			if(list.get(i)=="(")
-				stack.push(list.get(i));
-			if(list.get(j)==")")
-				if(matchingPair(stack.pop(), list.get(j))==true)
+			else if(expression.substring(i, i+1)==")")
+			{
+				op = opStack.pop();
+				while(op!="(")
 				{
-					op = list.get(i-1);
-					list.remove(op);
-					list.remove(j);
-					list.add(j, op);
+					list.add(op);
+					op = opStack.pop();
 				}
+			}
+			else
+			{
+				while(opStack.empty()==false&&hierarchy(opStack.peek())>=hierarchy(expression.substring(i, i+1)))
+					list.add(opStack.pop());
+				opStack.push(expression.substring(i, i+1));
+			}
 		}
+		while(opStack.empty()==false)
+			list.add(opStack.pop());
+		return list;
 	}
 	/**Checks if the expression is balanced for parentheses
 	 * @param list
@@ -167,14 +112,16 @@ public class InfixParser
 	 * @param list
 	 * @return
 	 */
-	public int hierarchy(int i, LinkedList<String> opStack)
+	public int hierarchy(String op)
 	{
-		if(opStack.get(i)=="*"||opStack.get(i)=="/")
+		if(op=="*"||op=="/")
 			return 2;
-		if(opStack.get(i)=="+"||opStack.get(i)=="-")
+		if(op=="+"||op=="-")
 			return 1;
+		if(op=="(")
+			return 3;
 		else
-			return 1;
+			return 0;
 	}
 	/**Removes any white space from an expression
 	 * @param expression
@@ -183,17 +130,6 @@ public class InfixParser
 	public String removeWhiteSpace(String expression)
 	{
 		return expression.replaceAll("\\s", "");
-	}
-	/**Creates a linked list from a mathematical expression
-	 * @param expression
-	 * @return
-	 */
-	public LinkedList<String> createList(String expression)
-	{
-		
-		for(int i=0; i<expression.length(); i++)
-			list.add(expression.substring(i, i+1));
-		return list;
 	}
 	/**Sets the mathematical expression
 	 * @param expression
