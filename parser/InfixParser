@@ -15,8 +15,8 @@ public class InfixParser
 {
 	private LinkedList<String> list = new LinkedList<String>();
 	private Stack<String> opStack = new Stack<String>();
-	private Stack<String> stack = new Stack<String>();
 	private Pattern number = Pattern.compile("[0-9]");
+	private Pattern operator = Pattern.compile("[\\+.\\-.\\*.\\/.]");
 	private HashMap<String, Integer> hierarchy = new HashMap<String, Integer>();
 	private String expression, op;
 	/**Constructor
@@ -36,7 +36,6 @@ public class InfixParser
 	 */
 	public LinkedList<String> parse()
 	{
-		stack.clear();
 		return parse(expression);
 	}
 	/**Iteratively sorts the list from in-fix to post-fix
@@ -45,7 +44,6 @@ public class InfixParser
 	 * @return
 	 */
 	//not finished
-	//need to 
 	public LinkedList<String> parse(String expression)
 	{
 		setHierarchy();
@@ -67,12 +65,13 @@ public class InfixParser
 			}
 			else
 			{
-				while(opStack.empty()==false&&hierarchy.get(opStack.peek())>=hierarchy.get(inst))
+				//issue with second half of condition
+				while(opStack.empty()==false&&hierarchy.get(opStack.peek())>hierarchy.get(inst))
 					list.add(opStack.pop());
 				opStack.push(inst);
 			}
 		}
-		while(opStack.isEmpty()!=true)
+		while(opStack.isEmpty()!=true&&operator.matcher(opStack.peek()).matches()==true)
 			list.add(opStack.pop());
 		return list;
 	}
@@ -83,19 +82,20 @@ public class InfixParser
 	//need to tweak to accurately work
 	public boolean isBalanced(String expression)
 	{
-		for(int i=0; i<expression.length(); i++)
+		String expressArr[] = toArray(expression);
+		for(String inst: expressArr)
 		{
-			if(expression.substring(i, i+1)=="(")
-				stack.push(expression.substring(i, i+1));
-			if(expression.substring(i, i+1)==")")
+			if(inst=="(")
+				opStack.push(inst);
+			if(inst==")")
 			{
-				if(stack.isEmpty())
+				if(opStack.isEmpty())
 					return true;
-				else if(matchingPair(stack.pop(), expression.substring(i, i+1)))
+				else if(matchingPair(opStack.pop(), inst))
 					return true;
 			}
 		}
-		if(stack.isEmpty())
+		if(opStack.isEmpty())
 			return true;
 		else
 			return false;
@@ -120,12 +120,12 @@ public class InfixParser
 	 */
 	private void setHierarchy()
 	{
-		hierarchy.put("(", 1);
-		hierarchy.put(")", 1);
-		hierarchy.put("-", 2);
-		hierarchy.put("+", 2);
-		hierarchy.put("*", 3);
-		hierarchy.put("/", 3);
+		hierarchy.put("(", 0);
+		hierarchy.put(")", 0);
+		hierarchy.put("-", 1);
+		hierarchy.put("+", 1);
+		hierarchy.put("*", 2);
+		hierarchy.put("/", 2);
 	}
 	/**Converts a string into an array
 	 * @param expression
