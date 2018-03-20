@@ -45,6 +45,7 @@ public class InfixParser
 	 * @return
 	 */
 	//not finished
+	//need to 
 	public LinkedList<String> parse(String expression)
 	{
 		setHierarchy();
@@ -66,7 +67,7 @@ public class InfixParser
 			}
 			else
 			{
-				while(opStack.empty()==false&&hierarchy(opStack.peek())>=hierarchy(inst))
+				while(opStack.empty()==false&&hierarchy.get(opStack.peek())>=hierarchy.get(inst))
 					list.add(opStack.pop());
 				opStack.push(inst);
 			}
@@ -126,21 +127,26 @@ public class InfixParser
 		hierarchy.put("*", 3);
 		hierarchy.put("/", 3);
 	}
-	/**Returns the value associated with the key that was given
-	* @param op
-	*/
-	public Integer hierarchy(String op)
-	{
-		return hierarchy.get(op);
-	}
-	
+	/**Converts a string into an array
+	 * @param expression
+	 * @return
+	 */
 	private String[] toArray(String expression)
 	{
 		String expressArr[] = new String[expression.length()];
 		for(int i=0; i<expressArr.length; i++)
-		{
 			expressArr[i] = expression.substring(i, i+1);
-		}
+		return expressArr;
+	}
+	/**Converts a linked list into an array
+	 * @param list
+	 * @return
+	 */
+	public String[] toArray(LinkedList<String> list)
+	{
+		String expressArr[] = new String[list.size()];
+		for(int i=0; i<expressArr.length; i++)
+			expressArr[i] = list.get(i);
 		return expressArr;
 	}
 	/**Removes any white space from an expression
