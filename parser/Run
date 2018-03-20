@@ -4,7 +4,6 @@
 package parser;
 import java.util.Scanner;
 import java.util.LinkedList;
-import my_exceptions.UnbalancedException;
 
 public class Run
 {
@@ -37,28 +36,12 @@ public class Run
 			System.out.println("ENDING PROGRAM");
 		}
 		InfixParser inp = new InfixParser(expression);
-		try
-		{
-			if(inp.isBalanced(expression)==false)
-			{
-				LinkedList<String> list = inp.parse();
-				System.out.println("Post-fix format:");
-				for(int i=0; i<list.size(); i++)
-					System.out.print(list.get(i));
-				System.out.println();
-				System.out.println("Enter another expression:");
-				runner();
-			}
-			else
-			{
-				throw new UnbalancedException();
-			}
-		}
-		catch(UnbalancedException unbalanced)
-		{
-			System.out.println("Unbalanced equation");
-			runner();
-		}
+		LinkedList<String> list = inp.parse();
+		System.out.println("Post-fix format:");
+		for(int i=0; i<list.size(); i++)
+			System.out.print(list.get(i));
+		System.out.println();
+		System.out.println("Enter another expression:");
+		runner();
 	}
 }
-
