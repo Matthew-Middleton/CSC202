@@ -67,6 +67,7 @@ public class InfixParser
 			{
 				//issue with second half of condition
 				while(opStack.empty()==false&&hierarchy.get(opStack.peek())>hierarchy.get(inst))
+				//for second condition >= works for non-paranthetic while > works for paranthetic
 					list.add(opStack.pop());
 				opStack.push(inst);
 			}
