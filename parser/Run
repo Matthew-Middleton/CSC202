@@ -3,7 +3,6 @@
  */
 package parser;
 import java.util.Scanner;
-import java.util.LinkedList;
 
 public class Run
 {
@@ -36,11 +35,8 @@ public class Run
 			System.out.println("ENDING PROGRAM");
 		}
 		InfixParser inp = new InfixParser(expression);
-		LinkedList<String> list = inp.parse();
-		System.out.println("Post-fix format:");
-		for(int i=0; i<list.size(); i++)
-			System.out.print(list.get(i));
-		System.out.println();
+		String postFix = inp.parse();
+		System.out.println("Post-fix format:\n" + postFix);
 		System.out.println("Enter another expression:");
 		runner();
 	}
