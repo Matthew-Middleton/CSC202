@@ -1,0 +1,71 @@
+public class StackArrayBound<T>
+{
+	private final int DEF = 100;
+	private int top = 0;
+	private T[] elements;
+	
+	@SuppressWarnings("unchecked")
+	public StackArrayBound()
+	{
+		elements = (T[]) new Object[DEF];
+	}
+	
+	@SuppressWarnings("unchecked")
+	public StackArrayBound(int MAXSIZE)
+	{
+		elements = (T[]) new Object[MAXSIZE];
+	}
+	/**Checks if the stack is empty
+	 * @return
+	 */
+	public boolean isEmpty()
+	{
+		return (top==0);
+	}
+	/**Checks if the stack is full
+	 * @return
+	 */
+	public boolean isFull()
+	{
+		return top==elements.length-1;
+	}
+	/**Adds the element to the top of the stack
+	 * @param element
+	 */
+	public void push(T element)
+	{
+		if(isFull())
+		{
+			System.out.println("STACK OVERFLOW");
+		}
+		else
+		{
+			top++;
+			elements[top] = element;
+		}
+	}
+	/**Removes the element at the top of the stack
+	 */
+	public void pop()
+	{
+		if(isEmpty())
+			System.out.println("STACK UNDERFLOW");
+		else
+		{
+			elements[top] = null;
+			top--;
+		}
+	}
+	/**Returns the element at the top of the stack
+	 * @return
+	 */
+	public T peek()
+	{
+		T topOfStack = null;
+		if(isEmpty())
+			System.out.println("STACK UNDERFLOW");
+		else
+			topOfStack = elements[top];
+		return topOfStack;
+	}
+}
