@@ -1,24 +1,19 @@
 /********************************************************************************************************************************\
  * Purpose: To convert an in-fix expression to a post-fix expression
- * Algorithm: Take an expression and remove any whitespace. Create an empty stack for operators and an empty list or an equivalent
- * data structure for the post-fix expression. Iterate over the expression and push any operators on the stack. If it is a beginning
+ * Algorithm: Take an expression and remove any whitespace. Create an empty stack for operators. Iterate over the expression,
+ * the expression values will be considered to be char values, and push any operators on the stack. If it is a beginning
  * parenthesis, push it on to the stack. If it is a ending parenthesis pop the stack until a beginning parenthesis is found.
- * Establish a hierarchy for the operators. If any operators remain on the stack at the end append them to the end of the stack.
- */
+ * Establish a hierarchy for the operators. If any operators remain on the stack at the end add them to the end of the stack.
+ ********************************************************************************************************************************/
 package parser;
-import java.util.LinkedList;
-import java.util.regex.Pattern;
 import java.util.Stack;
 import java.util.HashMap;
 
 public class InfixParser
 {
-	private LinkedList<String> list = new LinkedList<String>();
-	private Stack<String> opStack = new Stack<String>();
-	private Pattern number = Pattern.compile("[0-9]");
-	private Pattern operator = Pattern.compile("[\\+.\\-.\\*.\\/.]");
-	private HashMap<String, Integer> hierarchy = new HashMap<String, Integer>();
-	private String expression, op;
+	private Stack<Character> opStack = new Stack<Character>();
+	private HashMap<Character, Integer> hierarchy = new HashMap<Character, Integer>();
+	private String infix, postFix;
 	/**Constructor
 	 */
 	public InfixParser()
@@ -30,88 +25,46 @@ public class InfixParser
 	 */
 	public InfixParser(String expression)
 	{
-		this.expression = removeWhiteSpace(expression);
+		this.infix = removeWhiteSpace(expression);
 	}
 	/**Implements rearrangeExpression()
 	 */
-	public LinkedList<String> parse()
+	public String parse()
 	{
-		return parse(expression);
+		return parse(infix);
 	}
 	/**Iteratively sorts the list from in-fix to post-fix
-	 * @param i
 	 * @param list
 	 * @return
 	 */
 	//not finished
-	public LinkedList<String> parse(String expression)
+	public String parse(String infix)
 	{
 		setHierarchy();
-		String expressArr[] = toArray(expression);
-		for(String inst: expressArr)
+		postFix = "";
+		for(int i=0; i<infix.length(); i++)
 		{
-			if(number.matcher(inst).matches()==true)
-				list.add(inst);
-			else if(inst=="(")
+			char inst = infix.charAt(i);
+			if(Character.isDigit(inst))
+				postFix += inst;
+			else if(inst=='(')
 				opStack.push(inst);
-			else if(inst==")")
+			else if(inst==')')
 			{
-				op = opStack.pop();
-				while(op!="(")
-				{
-					list.add(op);
-					op = opStack.pop();
-				}
+				while(!opStack.empty()&&opStack.peek()!='(')
+					postFix += opStack.pop();
+				opStack.pop();
 			}
 			else
 			{
-				//issue with second half of condition
-				while(opStack.empty()==false&&hierarchy.get(opStack.peek())>hierarchy.get(inst))
-				//for second condition >= works for non-paranthetic while > works for paranthetic
-					list.add(opStack.pop());
+				while(!opStack.empty()&&hierarchy.get(opStack.peek())>=hierarchy.get(inst))
+					postFix += opStack.pop();
 				opStack.push(inst);
 			}
 		}
-		while(opStack.isEmpty()!=true&&operator.matcher(opStack.peek()).matches()==true)
-			list.add(opStack.pop());
-		return list;
-	}
-	/**Checks if the expression is balanced for parentheses
-	 * @param list
-	 * @return
-	 */
-	//need to tweak to accurately work
-	public boolean isBalanced(String expression)
-	{
-		String expressArr[] = toArray(expression);
-		for(String inst: expressArr)
-		{
-			if(inst=="(")
-				opStack.push(inst);
-			if(inst==")")
-			{
-				if(opStack.isEmpty())
-					return true;
-				else if(matchingPair(opStack.pop(), inst))
-					return true;
-			}
-		}
-		if(opStack.isEmpty())
-			return true;
-		else
-			return false;
-	}
-	/**Takes two operators and determines if they are a pair
-	 * @param op1
-	 * @param op2
-	 * @return
-	 */
-	public boolean matchingPair(String op1, String op2)
-	{
-		if(op1=="("&&op2==")")
-			return true;
-		else
-			return false;
+		while(!opStack.empty())
+			postFix += opStack.pop();
+		return postFix;
 	}
 	/**Establishes a hierarchy based on the type of operator
 	 * the greater the precedence of the operator the higher the number returned
@@ -121,34 +74,12 @@ public class InfixParser
 	 */
 	private void setHierarchy()
 	{
-		hierarchy.put("(", 0);
-		hierarchy.put(")", 0);
-		hierarchy.put("-", 1);
-		hierarchy.put("+", 1);
-		hierarchy.put("*", 2);
-		hierarchy.put("/", 2);
-	}
-	/**Converts a string into an array
-	 * @param expression
-	 * @return
-	 */
-	private String[] toArray(String expression)
-	{
-		String expressArr[] = new String[expression.length()];
-		for(int i=0; i<expressArr.length; i++)
-			expressArr[i] = expression.substring(i, i+1);
-		return expressArr;
-	}
-	/**Converts a linked list into an array
-	 * @param list
-	 * @return
-	 */
-	public String[] toArray(LinkedList<String> list)
-	{
-		String expressArr[] = new String[list.size()];
-		for(int i=0; i<expressArr.length; i++)
-			expressArr[i] = list.get(i);
-		return expressArr;
+		hierarchy.put('(', -1);
+		hierarchy.put(')', -1);
+		hierarchy.put('+', 1);
+		hierarchy.put('-', 1);
+		hierarchy.put('*', 2);
+		hierarchy.put('/', 2);
 	}
 	/**Removes any white space from an expression
 	 * @param expression
@@ -163,13 +94,20 @@ public class InfixParser
 	 */
 	public void setExpression(String expression)
 	{
-		this.expression = expression;
+		this.infix = expression;
 	}
 	/**Returns the mathematical expression
 	 * @return
 	 */
 	public String getExpression()
 	{
-		return expression;
+		return infix;
+	}
+	/**Returns the hierarchy for the operators
+	 * @return
+	 */
+	public HashMap<Character, Integer> getHierarchy()
+	{
+		return hierarchy;
 	}
 }
