@@ -1,0 +1,36 @@
+import java.util.Scanner;
+
+public class Run
+{
+	public Run()
+	{
+		
+	}
+	/**To be called in the main; runs the program.
+	 */
+	public void run()
+	{
+		System.out.println(greeting());
+		runner();
+	}
+	/**Greeting/instructions; implemented in run()
+	 * @return
+	 */
+	private String greeting()
+	{
+		return "Hello. Test and run your data structures here.\nEnter \"exit\" to exit the program";
+	}
+	/**The meat of the program(where everything occurs); implemented in run()
+	 */
+	private void runner()
+	{
+		Scanner input = new Scanner(System.in);
+		String expression = input.nextLine();
+		if(expression.equalsIgnoreCase("exit"))
+		{
+			System.out.println("ENDING PROGRAM");
+			System.exit(0);
+		}
+		input.close();
+	}
+}
