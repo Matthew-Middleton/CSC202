@@ -1,0 +1,89 @@
+/******************************************************\
+ * Purpose: Create and manage an unbounded array queue.
+ ******************************************************/
+package dataStructure;
+//need to check this entire class
+public class QueueArrayUnbound<T>
+{
+	protected int max = 100;
+	protected T[] elements;
+	protected int origCap;
+	protected int numElements = 0;
+	protected int front = 0;
+	protected int rear;
+	
+	@SuppressWarnings("unchecked")
+	public QueueArrayUnbound()
+	{
+		elements = (T[]) new Object[max];
+		rear = max-1;
+		this.origCap = max;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public QueueArrayUnbound(int maxsize)
+	{
+		this.max = maxsize;
+		elements = (T[]) new Object[maxsize];
+		rear = maxsize-1;
+		this.origCap = maxsize;
+	}
+	/**Checks if the queue is full
+	 * @return
+	 */
+	public boolean isFull()
+	{
+		return false;
+	}
+	/**Enlarges the queue
+	 */
+	private void enlarge()
+	{
+		@SuppressWarnings("unchecked")
+		T[] larger = (T[]) new Object[elements.length+origCap];
+		int currSmaller = front;
+		for(int currLarger=0; currLarger<numElements; currLarger++)
+		{
+			larger[currLarger] = elements[currSmaller];
+			currSmaller = (currSmaller+1)%elements.length;
+		}
+		elements = larger;
+		front = 0;
+		rear = numElements-1;
+	}
+	/**Adds the element to the queue
+	 * @param element
+	 */
+	public void enqueue(T element)
+	{
+		if(numElements==elements.length)
+			enlarge();
+		rear = (rear+1)%elements.length;
+		elements[rear] = element;
+		this.numElements += 1;
+	}
+	/**Removes the front element from the queue
+	 * @return
+	 */
+	public T dequeue()
+	{
+		T item = elements[front];
+        front = (front + 1)%origCap;
+        max = max - 1;
+        return item;
+	}
+	/**Returns the front element of the queue
+	 * @return
+	 */
+	public T front()
+	{
+		return elements[front];
+	}
+	/**Returns the rear element of the queue
+	 * @return
+	 */
+	public T rear()
+	{
+		return elements[rear];
+	}
+}
