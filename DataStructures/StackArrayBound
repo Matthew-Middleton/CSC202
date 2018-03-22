@@ -1,26 +1,31 @@
+/**************************************************\
+ * Purpose: Create and manage a bounded array stack
+ **************************************************/
+package dataStructure;
+
 public class StackArrayBound<T>
 {
-	private final int DEF = 100;
-	private int top = 0;
-	private T[] elements;
+	protected final int max = 100;
+	protected int top = -1;
+	protected T[] elements;
 	
 	@SuppressWarnings("unchecked")
 	public StackArrayBound()
 	{
-		elements = (T[]) new Object[DEF];
+		elements = (T[]) new Object[max];
 	}
 	
 	@SuppressWarnings("unchecked")
-	public StackArrayBound(int MAXSIZE)
+	public StackArrayBound(int maxsize)
 	{
-		elements = (T[]) new Object[MAXSIZE];
+		elements = (T[]) new Object[maxsize];
 	}
 	/**Checks if the stack is empty
 	 * @return
 	 */
 	public boolean isEmpty()
 	{
-		return (top==0);
+		return top==0;
 	}
 	/**Checks if the stack is full
 	 * @return
@@ -61,11 +66,12 @@ public class StackArrayBound<T>
 	 */
 	public T peek()
 	{
-		T topOfStack = null;
+		T stackTop = null;
 		if(isEmpty())
 			System.out.println("STACK UNDERFLOW");
 		else
-			topOfStack = elements[top];
-		return topOfStack;
+			stackTop = elements[top];
+		return stackTop;
 	}
 }
+
