@@ -1,0 +1,191 @@
+/******************************************\
+ * Purpose: To create a singly linked list.
+ ******************************************/
+package dataStructure;
+
+public class LinkedList<T>
+{
+	private LinkedList<T> head = null;
+	private LinkedList<T> next;
+	private T data;
+	
+	public LinkedList()
+	{
+		next = null;
+		data = null;
+	}
+	
+	public LinkedList(T element)
+	{
+		next = null;
+		this.data = element;
+	}
+	
+	public void print()
+	{
+		LinkedList<T> n = head;
+		while(n!=null)
+		{
+			System.out.print(n.data+" ");
+			n = n.next;
+		}
+	}
+	/**Adds the given element to the end of the list
+	 * @param element
+	 */
+	public void add(T element)
+	{
+		LinkedList<T> n = new LinkedList<T>(element);
+		if(head==null)
+		{
+			head = new LinkedList<T>(element);
+			return;
+		}
+		n.next = null;
+		LinkedList<T> last = head;
+		while(last.next!=null)
+			last = last.next;
+		last.next = n;
+		return;
+	}
+	/**Adds the given element at the given position
+	 * @param element
+	 * @param i
+	 */
+	//haven't tested
+	//needs work
+	public void add(T element, int i)
+	{
+		LinkedList<T> n = head;
+		LinkedList<T> l = new LinkedList<T>(element);
+		if(i>length()||i<0)//0 is the start index
+			return;
+		int x = 0;
+		//from here
+		while(n!=null&&x<i)
+		{
+			n = n.next;
+			++x;
+			if(x==i)
+			{
+				n.next = l;
+				l.next = n.next;
+			}
+		}
+		//to here is where the problem is
+	}
+	/**Replaces the element at the index given with the given element
+	 * @param element
+	 * @param i
+	 * @return
+	 */
+	public boolean replace(T element, int i)
+	{
+		if(i==length()||i<0)
+			return false;
+		LinkedList<T> n = head;
+		int x = 0;
+		while(n!=null&&x<i)
+		{
+			n = n.next;
+			x++;
+			if(x==i)
+			{
+				n.data = element;
+				return true;
+			}
+		}
+		return false;
+	}
+	/**Adds the given element to the front of the list
+	 * @param element
+	 */
+	public void push(T element)
+	{
+		LinkedList<T> n = new LinkedList<T>(element);
+		n.next = head;
+		head = n;
+	}
+	/**Removes the element from the tail of the list
+	 * @return
+	 */
+	public T pop()
+	{
+		LinkedList<T> n = head;
+		T item = null;
+		int x = 0;
+		while(n!=null&&x<length())
+		{
+			n = n.next;
+			x++;
+			if(x==length()-1)
+			{
+				item = n.data;
+				n.data = null;
+			}
+		}
+		return item;
+	}
+	/**Returns the element at the given position
+	 * returns null if the index is out of bounds
+	 * @param i
+	 * @return
+	 */
+	public T get(int i)
+	{
+		if(i==length()||i<0)//0 is the start index
+			return null;
+		LinkedList<T> n = head;
+		int x = 0;
+		while(n!=null&&x<i)
+		{
+			n = n.next;
+			x++;
+		}
+		return n.data;
+	}
+	/**Returns the head element of the list
+	 * @return
+	 */
+	public T getHead()
+	{
+		return head.data;
+	}
+	/**Returns the tail element of the list
+	 * @return
+	 */
+	public T getTail()
+	{
+		LinkedList<T> n = head;
+		int x = 0;
+		while(n!=null&&x<length()-1)
+		{
+			n = n.next;
+			x++;
+		}
+		return n.data;
+	}
+	/**Removes and returns the head element of the list
+	 * @return
+	 */
+	public T remove()
+	{
+		T item = head.data;
+		head = head.next;
+		return item;
+	}
+	/**Returns the length of the list
+	 * @return
+	 */
+	public int length()
+	{
+		LinkedList<T> n = head;
+		int x = 0;
+		while(n!=null)
+		{
+			n = n.next;
+			x++;
+		}
+		return x;
+	}
+}
