@@ -48,31 +48,29 @@ public class LinkedList<T>
 		last.next = n;
 		return;
 	}
-	/**Adds the given element at the given position
+	/**Adds the given element after the given position and removes the elements after
 	 * @param element
 	 * @param i
 	 */
-	//haven't tested
-	//needs work
-	public void add(T element, int i)
+	public boolean add(T element, int i)
 	{
+		if(i>=length()||i<0)
+			return false;
 		LinkedList<T> n = head;
 		LinkedList<T> l = new LinkedList<T>(element);
-		if(i>length()||i<0)//0 is the start index
-			return;
 		int x = 0;
-		//from here
 		while(n!=null&&x<i)
 		{
 			n = n.next;
-			++x;
+			x++;//doesn't want to insert before third element
 			if(x==i)
 			{
-				n.next = l;
 				l.next = n.next;
+				n.next = l;
+				return true;
 			}
 		}
-		//to here is where the problem is
+		return false;
 	}
 	/**Replaces the element at the index given with the given element
 	 * @param element
@@ -81,7 +79,7 @@ public class LinkedList<T>
 	 */
 	public boolean replace(T element, int i)
 	{
-		if(i==length()||i<0)
+		if(i>=length()||i<0)
 			return false;
 		LinkedList<T> n = head;
 		int x = 0;
