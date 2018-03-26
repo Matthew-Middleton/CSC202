@@ -1,0 +1,51 @@
+/*********************************************\
+ * Purpose: To create and manage a binary tree
+ *********************************************/
+package dataStructure;
+
+public class BinaryTree
+{
+	private	BinaryTree root = null;
+	private BinaryTree left, right;
+	private int data;
+	
+	public BinaryTree()
+	{
+		left = null;
+		right = null;
+	}
+	
+	public BinaryTree(int data)
+	{
+		left = null;
+		right = null;
+		this.data = data;
+	}
+	/**Adds data to the binary tree
+	 * @param data
+	 */
+	public void add(int data)
+	{
+		BinaryTree node, node1;
+		if(root==null)
+		{
+			root = new BinaryTree(data);
+			return;
+		}
+		node = root;
+		node1 = node;
+		while(node!=null)
+		{
+			if(data==node.data)
+				return;
+			else if(data<node.data)
+				node = node.left;
+			else
+				node = node.right;
+		}
+		if(data<node1.data)
+			node1.left = new BinaryTree(data);
+		else
+			node1.right = new BinaryTree(data);
+	}
+}
