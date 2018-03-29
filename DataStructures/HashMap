@@ -1,55 +1,80 @@
 /***************************************\
  * Purpose: Create and manage a hash map
  ***************************************/
-package dataStructure;
+package dataStructures;
 
 public class HashMap<K,D>
 {
-	private class Node
+	@SuppressWarnings("hiding")
+	protected class Hash<K,D>
 	{
-		public Node()
+		protected K key;
+		protected D data;
+		protected Hash<K,D> next = null;
+		
+		public Hash(K key, D data)
 		{
-			
+			this.key = key;
+			this.data = data;
+		}
+		
+		public K getKey()
+		{
+			return key;
+		}
+		
+		public D getData()
+		{
+			return data;
 		}
 	}
-	private Node prev, next;
 	private int size = 20;
 	@SuppressWarnings("unused")
 	private K key;
-	private K[] keys;
 	@SuppressWarnings("unused")
 	private D data;
-	private D[] dataSet;
+	private Hash<K,D>[] table;
 	
 	@SuppressWarnings("unchecked")
 	public HashMap()
 	{
 		key = null;
 		data = null;
-		keys = (K[]) new Object[size];
-		dataSet = (D[]) new Object[size];
+		table = (Hash[]) new Object[size];
 	}
 	
 	@SuppressWarnings("unchecked")
 	public HashMap(int size)
 	{
 		this.size = size;
-		key = null;
-		data = null;
-		keys = (K[]) new Object[size];
-		dataSet = (D[]) new Object[size];
-		
+		table = (Hash[]) new Object[size];
 	}
-	/**Creates a hash using a linked list
+	/**Creates a hash
 	 * @param key
 	 * @param data
 	 */
-	public void set(K key, D data)
+	public void put(K key, D data)
 	{
-		for(int i=0; i<size; i++)
+		int index = hashCodeNew(key);
+		Hash<K,D> hash = new Hash<K,D>(key, data);
+		if(table[index]==null)
+			table[index] = hash;
+		else
 		{
-			if(dataSet[i]==null)
-				dataSet[i] = data;
+			Hash<K,D> current = table[index];
 		}
+		
+	}
+	/**Sets the index value for the hash
+	 * @param key
+	 * @return
+	 */
+	//need to adjust for base size of table[]
+	private int hashCodeNew(K key)
+	{
+		char k = (char) key;
+		k ^= (k>>>20)^(k>>>12);
+		int hashCode = k^(k>>>7)^(k>>>4);
+		return hashCode % size;
 	}
 }
