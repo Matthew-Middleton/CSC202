@@ -1,0 +1,55 @@
+/***************************************\
+ * Purpose: Create and manage a hash map
+ ***************************************/
+package dataStructure;
+
+public class HashMap<K,D>
+{
+	private class Node
+	{
+		public Node()
+		{
+			
+		}
+	}
+	private Node prev, next;
+	private int size = 20;
+	@SuppressWarnings("unused")
+	private K key;
+	private K[] keys;
+	@SuppressWarnings("unused")
+	private D data;
+	private D[] dataSet;
+	
+	@SuppressWarnings("unchecked")
+	public HashMap()
+	{
+		key = null;
+		data = null;
+		keys = (K[]) new Object[size];
+		dataSet = (D[]) new Object[size];
+	}
+	
+	@SuppressWarnings("unchecked")
+	public HashMap(int size)
+	{
+		this.size = size;
+		key = null;
+		data = null;
+		keys = (K[]) new Object[size];
+		dataSet = (D[]) new Object[size];
+		
+	}
+	/**Creates a hash using a linked list
+	 * @param key
+	 * @param data
+	 */
+	public void set(K key, D data)
+	{
+		for(int i=0; i<size; i++)
+		{
+			if(dataSet[i]==null)
+				dataSet[i] = data;
+		}
+	}
+}
