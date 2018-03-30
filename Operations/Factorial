@@ -1,0 +1,37 @@
+//Java file
+public class Factorial
+{
+	public Factorial()
+	{
+		
+	}
+	/**Performs a recursive factorial
+	 * stack overflow occurs around n>30
+	 * @param n
+	 * @return
+	 * @throws StackOverflowError
+	 */
+	public int recFact(int n) throws StackOverflowError
+	{
+		if(n==0)
+			return 1;
+		else
+			return n * recFact(n-1);
+	}
+	/**Performs an iterative factorial
+	 * @param n
+	 * @return
+	 */
+	public int iterFact(int n)
+	{
+		int fact = 0;
+		if(n==0)
+			fact = 1;
+		else if(n==1)
+			fact = 1;
+		else
+			for(int i=0; i<n; i++)
+				fact *= i;
+		return fact;
+	}
+}
