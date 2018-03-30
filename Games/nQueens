@@ -1,0 +1,152 @@
+/**Solves an nQueens game.
+ * Algorithm: Take in the size of the board and make a one-dimensional array of board size. Start by placing a queen at the starting
+ * position of the array and keep adding queens on to spots on the board as long as they do not match the previous arrays location.
+ * Keep in mind how a queen may attack.
+ * Complexity: O(n!) for combinations
+ * O(n*log(n)) for solutions only ** I think; graph has few dips
+ */
+package nQueens;
+
+public class NQueens
+{
+	private int size;
+	private int attack[];
+	int s = 0;
+	
+	public NQueens()
+	{
+		
+	}
+	
+	public NQueens(int n)
+	{
+		this.size = n;
+	}
+	/**Prints the board with the locations of each possible location for a queen
+	 * @param attack
+	 */
+	//think about putting all of the checked values into an array and then check over that array
+	public void printEm(int attack[])
+	{
+		System.out.println("Solution " + (++s));
+		for(int i=0; i<size; i++)
+		{
+			for(int j=0; j<size; j++)//if using solveEm() set j=1 and j<=size
+				{
+					if(attack[i]==j)
+						System.out.print(" Q ");
+					else
+						System.out.print(" - ");
+				}
+			System.out.println();
+		}
+		System.out.println();
+	}
+	/**For enumerating the queens board
+	 * @param i
+	 * @param attack
+	 * @return
+	 */
+	public boolean enumerate(int i, int attack[])
+	{
+		for(int j=1; j<i; j++)
+		{
+			// same column
+			 if (attack[j]==attack[i])
+				return false;
+			 //diagonally down
+	         if (attack[j]-attack[i]==j-i)
+	            return false;
+	         //diagonally up
+	         if (attack[i]-attack[j]==i-j)
+	        	return false;
+		}
+		return true;
+	}
+	/**Checks if the points on the board are attacked
+	 * @param y
+	 * @return
+	 */
+	public boolean unsafe(int y, int attack[])
+	{
+		int x = attack[y];
+		for(int i=1; i<=y; i++)
+		{
+			int t = attack[y-i];
+			if(t==x||t==x-i||t==x+i)//checks next line on board for safety
+				return true;
+		}
+		return false;
+	}
+	/**Implements the iterative/recursive method that solves for the nQueens problem
+	 */
+	public void nQueensSolve()
+	{
+		attack = new int[size];
+		//attack[0] = -1;
+		nQueensRec(0,attack);
+		//nQueensIter(0,attack);
+	}
+	/**Solves the nQueens problem
+	 * recursive solution
+	 * see complexity above
+	 * @param i
+	 * @param attack
+	 */
+	//remove unsafe() for all possible queen combinations or use enumerate() for enumerations of the boards
+	//haven't tried but the same idea could potentially be applied to the iterative solution
+	public void nQueensRec(int i, int attack[])
+	{
+		if(i==size)
+			printEm(attack);
+		else
+			for(int q=0; q<size; q++)
+			{
+				attack[i] = q;
+				if(attack[i]<size&&unsafe(i,attack)==false)
+					nQueensRec(i+1,attack);
+			}
+	}
+	/**Solves the nQueens problem
+	 * iterative solution
+	 * @param i
+	 * @param attack
+	 */
+	public void nQueensIter(int i, int attack[])
+	{
+		while(i>=0)
+		{
+			do
+			{
+				attack[i]++;//increase the number at the point on the board
+			}while(attack[i]<size&&unsafe(i,attack));//checks if within bounds and each piece is safe
+			if(attack[i]<size)
+			{
+				if(i<size-1)
+					attack[++i] = -1;//sets the queen on the spot
+				else
+					printEm(attack);
+			}
+			else
+				i--;
+		}
+	}
+	/*Sets the size for an n-sized board
+	 */
+	public void setSize(int n)
+	{
+		this.size = n;
+	}
+	/*Returns the size for an n-sized board
+	 */
+	public int getSize()
+	{
+		return size;
+	}
+	/*Returns the board that shows the queens attack paths
+	 */
+	public int[] getAttack()
+	{
+		return attack;
+	}
+}
