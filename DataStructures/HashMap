@@ -123,8 +123,15 @@ public class HashMap<K,D>
 	 * @param k
 	 * @return
 	 */
-	public double loadFactor(int n, int k)
+	public double loadFactor()
 	{
+		int n = 0;
+		int k = size;
+		for(HashMap<K, D>.Map<K, D> current: table)
+		{
+			if(current.data!=null&&current.key!=null)
+				n += 1;
+		}
 		return (double)n/k;
 	}
 }
