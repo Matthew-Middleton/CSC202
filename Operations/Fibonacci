@@ -1,0 +1,53 @@
+/*******************************\
+ * Purpose: To return the nth Fibonacci number
+ * Complexity:  1) O(2^n)
+ * 				2) O(n)
+ * 				3) O(n)
+ */
+package operations;
+public class Fibonacci
+{
+	/**Returns the nth Fibonacci number recursively
+	 * @param n
+	 * @return
+	 */
+	public int recFib(int n)
+	{
+		if(n<=1)
+			return n;
+		return recFib(n-1) + recFib(n-2);
+	}
+	/**Returns the nth Fibonacci number recursively
+	 * simpler complexity
+	 * @param n
+	 * @param a
+	 * @param b
+	 * @return
+	 */
+	public int propRecFib(int n, int a, int b)
+	{
+		if(n==0)
+			return a;
+		if(n==1)
+			return b;
+		return propRecFib(n-1, b, a+b);
+	}
+	/**Returns the nth Fibonacci number iteratively
+	 * @param n
+	 * @return
+	 */
+	public int iterFib(int n)
+	{
+		if(n <= 1) {
+			return n;
+		}
+		int fib = 1;
+		int prevFib = 1;
+		for(int i=2; i<n; i++) {
+			int temp = fib;
+			fib += prevFib;
+			prevFib = temp;
+		}
+		return fib;
+	}
+}
