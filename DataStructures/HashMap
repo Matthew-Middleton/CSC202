@@ -40,17 +40,11 @@ public class HashMap<K,D>
 		}
 	}
 	private int size = 20;
-	@SuppressWarnings("unused")
-	private K key;
-	@SuppressWarnings("unused")
-	private D data;
 	private Map<K,D>[] table;
 	
 	@SuppressWarnings("unchecked")
 	public HashMap()
 	{
-		key = null;
-		data = null;
 		table = (Map[]) new Object[size];
 	}
 	
@@ -118,6 +112,28 @@ public class HashMap<K,D>
 		//nothing found
 		return null;
 	}
+	/**Replaces the given key with the old key that was associated with the data provided.
+	 * Bad wording but can't think of a way to rephrase
+	 * @param key
+	 * @param data
+	 * @return
+	 */
+	public boolean set(K key, D data)
+	{
+		for(HashMap<K,D>.Map<K,D> current: table)
+		{
+			while(current!=null)
+			{
+				current = current.next;
+				if(current.data.equals(data))
+				{
+					current.key = key;
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 	/**Returns the load factor for the hash table where n is the number of entries in the table and k is the number of buckets
 	 * @param n
 	 * @param k
@@ -135,4 +151,3 @@ public class HashMap<K,D>
 		return (double)n/k;
 	}
 }
-
