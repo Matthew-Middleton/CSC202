@@ -1,31 +1,42 @@
 /***************************************\
  * Purpose: Create and manage a hash map
  ***************************************/
-package dataStructures;
+package dataStructure;
 
 public class HashMap<K,D>
 {
 	@SuppressWarnings("hiding")
-	protected class Hash<K,D>
+	protected class Map<K,D>
 	{
 		protected K key;
 		protected D data;
-		protected Hash<K,D> next = null;
+		protected Map<K,D> next = null;
 		
-		public Hash(K key, D data)
+		public Map(K key, D data)
 		{
 			this.key = key;
 			this.data = data;
 		}
-		
+		/**Returns the key
+		 * @return
+		 */
 		public K getKey()
 		{
 			return key;
 		}
-		
+		/**Returns the data
+		 * @return
+		 */
 		public D getData()
 		{
 			return data;
+		}
+		/**Sets the data
+		 * @param data
+		 */
+		public void setData(D data)
+		{
+			this.data = data;
 		}
 	}
 	private int size = 20;
@@ -33,21 +44,21 @@ public class HashMap<K,D>
 	private K key;
 	@SuppressWarnings("unused")
 	private D data;
-	private Hash<K,D>[] table;
+	private Map<K,D>[] table;
 	
 	@SuppressWarnings("unchecked")
 	public HashMap()
 	{
 		key = null;
 		data = null;
-		table = (Hash[]) new Object[size];
+		table = (Map[]) new Object[size];
 	}
 	
 	@SuppressWarnings("unchecked")
 	public HashMap(int size)
 	{
 		this.size = size;
-		table = (Hash[]) new Object[size];
+		table = (Map[]) new Object[size];
 	}
 	/**Creates a hash
 	 * @param key
@@ -55,26 +66,66 @@ public class HashMap<K,D>
 	 */
 	public void put(K key, D data)
 	{
-		int index = hashCodeNew(key);
-		Hash<K,D> hash = new Hash<K,D>(key, data);
-		if(table[index]==null)
-			table[index] = hash;
-		else
+		//int hash = hashCode(key);
+		//int bucket = bucketNum(hash);
+		Map<K,D> current = table[bucketNum(hashCode(key))];
+		while(current!=null)
 		{
-			Hash<K,D> current = table[index];
+			current = current.next;
+			if(current.key.equals(key))
+				current.data = data;
+			return;
 		}
-		
+		Map<K,D> prevEntry = new Map<K,D>(key, data);
+		prevEntry.next = table[bucketNum(hashCode(key))];
+		table[bucketNum(hashCode(key))] = prevEntry;
 	}
-	/**Sets the index value for the hash
+	/**Sets the index value for the hash map
 	 * @param key
 	 * @return
 	 */
-	//need to adjust for base size of table[]
-	private int hashCodeNew(K key)
+	private int hashCode(K key)
 	{
+		// This function ensures that hashCodes that differ only by
+	    // constant multiples at each bit position have a bounded
+	    // number of collisions (approximately 8 at default load factor).
 		char k = (char) key;
 		k ^= (k>>>20)^(k>>>12);
 		int hashCode = k^(k>>>7)^(k>>>4);
 		return hashCode % size;
 	}
+	/**Makes sure the bucket number falls within the size of the hash map based on the value of hash
+	 * @param hash
+	 * @return
+	 */
+	private int bucketNum(int hash)
+	{
+		return hash&(size-1);
+	}
+	/**Returns the data associated with the key for the hash map
+	 * @param key
+	 * @return
+	 */
+	public D get(K key)
+	{
+		Map<K,D> current = table[bucketNum(hashCode(key))];
+		while(current!=null)
+		{
+			if(current.key.equals(key))
+				return current.data;
+			current = current.next;
+		}
+		//nothing found
+		return null;
+	}
+	/**Returns the load factor for the hash table where n is the number of entries in the table and k is the number of buckets
+	 * @param n
+	 * @param k
+	 * @return
+	 */
+	public double loadFactor(int n, int k)
+	{
+		return (double)n/k;
+	}
 }
+
