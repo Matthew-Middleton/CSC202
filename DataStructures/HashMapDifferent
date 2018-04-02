@@ -1,0 +1,144 @@
+/***************************************\
+ * Purpose: Create and manage a hash map
+ ***************************************/
+package dataStructure;
+import java.util.Iterator;
+
+public class HashMap<K,D>
+{
+	@SuppressWarnings("hiding")
+	protected class Map<K,D>
+	{
+		protected K key;
+		protected D data;
+		protected Map<K,D> next = null;
+		
+		public Map(K key, D data)
+		{
+			this.key = key;
+			this.data = data;
+		}
+		/**Returns the key
+		 * @return
+		 */
+		public K getKey()
+		{
+			return key;
+		}
+		/**Returns the data
+		 * @return
+		 */
+		public D getData()
+		{
+			return data;
+		}
+		/**Sets the data
+		 * @param data
+		 */
+		public void setData(D data)
+		{
+			this.data = data;
+		}
+	}
+	protected final int size = 1000;
+	protected final double defLoad = .75;
+	protected double load;
+	protected int currCap;
+	protected int numPairs = 0; //pairs in the map
+	private Map<K,D>[] map;
+	
+	@SuppressWarnings("unchecked")
+	public HashMap()
+	{
+		map = (Map[]) new Object[size];
+		currCap = size;
+		load = defLoad;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public HashMap(int size)
+	{
+		map = (Map[]) new Object[size];
+		load = defLoad;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public HashMap(int size, double load)
+	{
+		map = (Map[]) new Object[size];
+		currCap = size;
+		this.load = load;
+	}
+	/**Enlarges the array if the load factor is too great
+	 */
+	@SuppressWarnings("unchecked")
+	private void enlarge()
+	{
+		Map<K,D>[] placeHold = map;
+		int count = numPairs;
+		map = (Map[]) new Object[size+size];
+		currCap += size;
+		numPairs = 0;
+		Map<K,D> entry = null;
+		for(HashMap<K,D>.Map<K,D> inst: map)
+		{
+			if(inst==null)
+				for(int n=1; n<=count; n++)
+				{
+					entry = inst.next;
+					this.put((K)entry.getKey(), (D)entry.getData());
+				}
+			break;
+		}
+	}
+	/**Creates a hash
+	 * @param key
+	 * @param data
+	 */
+	public D put(K key, D data)
+	{
+		if(key==null)
+			throw new IllegalArgumentException("Null keys not allowed");
+		Map<K,D> entry = new Map<K,D>(key, data);
+		int bucket = bucketNum(hashCode(key));
+		while(map[bucket]!=null&&!(map[bucket].getKey().equals(key)))
+			bucket = (bucket+1)%size;
+		if(map[bucket]==null)
+		{
+			map[bucket] = entry;
+			numPairs++;
+			if((float)numPairs/size>load)
+				enlarge();
+			return null;
+		}
+		else
+			
+		{
+			D temp = (D)map[bucket].getData();
+			map[bucket] = entry;
+			return temp;
+		}
+	}
+	/**Sets the index value for the hash map
+	 * @param key
+	 * @return
+	 */
+	private int hashCode(K key)
+	{
+		// This function ensures that hashCodes that differ only by
+	    // constant multiples at each bit position have a bounded
+	    // number of collisions (approximately 8 at default load factor).
+		char k = (char) key;
+		k ^= (k>>>20)^(k>>>12);
+		int hashCode = k^(k>>>7)^(k>>>4);
+		return hashCode % size;
+	}
+	/**Makes sure the bucket number falls within the size of the hash map based on the value of hash
+	 * @param hash
+	 * @return
+	 */
+	private int bucketNum(int hash)
+	{
+		return hash&(size-1);
+	}
+}
