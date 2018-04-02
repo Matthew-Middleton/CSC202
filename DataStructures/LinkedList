@@ -186,4 +186,32 @@ public class LinkedList<T>
 		}
 		return x;
 	}
+	/**Sets the node as link
+	 * @param node
+	 */
+	public void setLink(LinkedList<T> node)
+	{
+		this.link = node;
+	}
+	/**Returns the link node
+	 * @return
+	 */
+	public LinkedList<T> getLink()
+	{
+		return link;
+	}
+	/**Sets the data for the current node
+	 * @param data
+	 */
+	public void setData(T data)
+	{
+		this.data = data;
+	}
+	/**Returns the data associated with the current node
+	 * @return
+	 */
+	public T getData()
+	{
+		return data;
+	}
 }
