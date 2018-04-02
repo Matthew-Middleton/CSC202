@@ -74,21 +74,16 @@ public class HashMap<K,D>
 	@SuppressWarnings("unchecked")
 	private void enlarge()
 	{
-		Map<K,D>[] placeHold = map;
+		Iterator<Map<K,D>> i = iterator();
 		int count = numPairs;
-		map = (Map[]) new Object[size+size];
+		map = (Map[]) new Object[currCap+size];
 		currCap += size;
 		numPairs = 0;
 		Map<K,D> entry = null;
-		for(HashMap<K,D>.Map<K,D> inst: map)
+		for(int n=1; n<=count; n++)
 		{
-			if(inst==null)
-				for(int n=1; n<=count; n++)
-				{
-					entry = inst.next;
-					this.put((K)entry.getKey(), (D)entry.getData());
-				}
-			break;
+			entry = i.next();
+			this.put(entry.getKey(), entry.getData());
 		}
 	}
 	/**Creates a hash
@@ -102,12 +97,12 @@ public class HashMap<K,D>
 		Map<K,D> entry = new Map<K,D>(key, data);
 		int bucket = bucketNum(hashCode(key));
 		while(map[bucket]!=null&&!(map[bucket].getKey().equals(key)))
-			bucket = (bucket+1)%size;
+			bucket = (bucket+1)%currCap;
 		if(map[bucket]==null)
 		{
 			map[bucket] = entry;
 			numPairs++;
-			if((float)numPairs/size>load)
+			if((float)numPairs/currCap>load)
 				enlarge();
 			return null;
 		}
@@ -118,6 +113,35 @@ public class HashMap<K,D>
 			map[bucket] = entry;
 			return temp;
 		}
+	}
+	/**Returns the data associated with the given key
+	 * @param key
+	 * @return
+	 */
+	public D get(K key)
+	{
+		if(key==null)
+			throw new IllegalArgumentException("Null keys not allowed");
+		int bucket = bucketNum(hashCode(key));
+		while(map[bucket]!=null&&!map[bucket].getKey().equals(key))
+			bucket = (bucket+1)%currCap;
+		if(map[bucket]==null)
+			return null;
+		else
+			return (D)map[bucket].getData();
+	}
+	
+	public boolean contains(K key)
+	{
+		if(key==null)
+			throw new IllegalArgumentException("Null keys not allowed.");
+		int bucket = bucketNum(hashCode(key));
+		while(map[bucket]!=null)
+			if(map[bucket].getKey().equals(key))
+				return true;
+			else
+				bucket = (bucket+1)%currCap;
+		return false;
 	}
 	/**Sets the index value for the hash map
 	 * @param key
@@ -131,7 +155,7 @@ public class HashMap<K,D>
 		char k = (char) key;
 		k ^= (k>>>20)^(k>>>12);
 		int hashCode = k^(k>>>7)^(k>>>4);
-		return hashCode % size;
+		return hashCode % currCap;
 	}
 	/**Makes sure the bucket number falls within the size of the hash map based on the value of hash
 	 * @param hash
@@ -139,6 +163,70 @@ public class HashMap<K,D>
 	 */
 	private int bucketNum(int hash)
 	{
-		return hash&(size-1);
+		return hash&(currCap-1);
+	}
+	/**Checks whether there are any elements in the map[]
+	 * @return
+	 */
+	public boolean isEmpty()
+	{
+		return numPairs==0;
+	}
+	/**Returns the number of entries
+	 * @return
+	 */
+	public int size()
+	{
+		return numPairs;
+	}
+	/**Creates an iterator for the hash map
+	 */
+	private class MapIterator implements Iterator<Map<K,D>>
+	{
+		int listSize = size();
+		@SuppressWarnings("unchecked")
+		private Map<K,D>[] list = (Map<K,D>[]) new Object[listSize];
+		private int prev = -1;
+		
+		public MapIterator()
+		{
+			int next = -1;
+			for(int i=0; i<listSize; i++)
+			{
+				next++;
+				while(map[next]==null)
+					next++;
+				list[i] = map[next];
+			}
+		}
+		/**Checks if there is another element
+		 */
+		public boolean hasNext()
+		{
+			return prev<listSize-1;
+		}
+		/**Returns the next element in the list
+		 */
+		public Map<K,D> next()
+		{
+			if(!hasNext())
+				throw new IndexOutOfBoundsException("Illegal next() call.");
+			prev++;
+			return list[prev];
+		}
+		/**Remove is not a supported operation.
+		 * 	throws UnsupportedOperationException()
+		 */
+		public void remove()
+		{
+			throw new UnsupportedOperationException("remove() is not supported.");
+		}
+	}
+	/**Returns an iterator for the hash map
+	 * @return
+	 */
+	public Iterator<Map<K,D>> iterator()
+	{
+		return new MapIterator();
 	}
 }
