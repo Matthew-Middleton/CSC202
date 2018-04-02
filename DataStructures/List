@@ -1,0 +1,133 @@
+package dataStructure;
+import dataStructure.LinkedList;
+
+public class List<T>
+{
+	protected LinkedList<T> front, rear, location, previous;
+	protected int numElements = 0;
+	protected boolean found;
+	protected int targetIndex;
+	
+	public List()
+	{
+		numElements = 0;
+		front = null;
+		rear = null;
+	}
+	/**Passes over the list until the desired element is reached
+	 * @param index
+	 * @param newElement
+	 * @return
+	 */
+	public T set(int index, T newElement)
+	{
+		if(index<0||index>=size())
+			return null;
+		LinkedList<T> node = front;
+		for(int i=0; i<index; i++)
+			node = node.getLink();
+		T hold = node.getData();
+		node.setData(newElement);
+		return hold;
+	}
+	
+	public void add(int index, T element)
+	{
+		if(index<0||index>size())
+			return;
+		LinkedList<T> newNode = new LinkedList<T>(element);
+		if(index==0)
+		{
+			if(front==null)
+			{
+				front = newNode;
+				rear = newNode;
+			}
+			else
+			{
+				newNode.setLink(front);
+				front = newNode;
+			}
+		}
+		else
+			if(index==size())
+			{
+				rear.setLink(newNode);
+				rear = newNode;
+			}
+			else
+			{
+				LinkedList<T> node = front;
+				for(int i=0; i<index-1; i++)
+					node = node.getLink();
+				newNode.setLink(node.getLink());
+				node.setLink(newNode);
+			}
+		numElements++;
+	}
+	/**Returns the size of the list
+	 * @return
+	 */
+	public int size()
+	{
+		LinkedList<T> node = front;
+		int x = 0;
+		while(node!=null)
+		{
+			node = node.next;
+			x++;
+		}
+		return x;
+	}
+	
+	public List<T> iterator()
+	{
+		return new List<T>()
+		{
+			protected LinkedList<T> prev = null;
+			protected LinkedList<T> curr = null;
+			protected LinkedList<T> next = front;
+				
+			public boolean hasNext()
+			{
+				return next!=null;
+			}
+		
+			@SuppressWarnings("unused")
+			public T next()
+			{
+				if(!hasNext())
+					throw new IndexOutOfBoundsException("Cannot call next here.");
+				T hold = next.getData();
+				if(curr!=null)
+					prev = curr;
+				curr = next;
+				next = next.getLink();
+				return hold;
+			}
+			
+			@SuppressWarnings("unused")
+			public void remove()
+			{
+				if(curr==null)
+					return;
+				else
+				{
+					if(prev==null)
+					{
+						front = next;
+						curr = null;
+						if(front==null)
+							rear = null;
+					}
+					else
+					{
+						prev.setLink(next);
+						curr = null;
+					}
+					numElements--;
+				}
+			}
+		};
+	}
+}
