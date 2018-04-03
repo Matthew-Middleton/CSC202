@@ -6,40 +6,6 @@ import java.util.Iterator;
 
 public class HashMap<K,D>
 {
-	@SuppressWarnings("hiding")
-	protected class Map<K,D>
-	{
-		protected K key;
-		protected D data;
-		protected Map<K,D> next = null;
-		
-		public Map(K key, D data)
-		{
-			this.key = key;
-			this.data = data;
-		}
-		/**Returns the key
-		 * @return
-		 */
-		public K getKey()
-		{
-			return key;
-		}
-		/**Returns the data
-		 * @return
-		 */
-		public D getData()
-		{
-			return data;
-		}
-		/**Sets the data
-		 * @param data
-		 */
-		public void setData(D data)
-		{
-			this.data = data;
-		}
-	}
 	protected final int size = 1000;
 	protected final double defLoad = .75;
 	protected double load;
@@ -50,7 +16,7 @@ public class HashMap<K,D>
 	@SuppressWarnings("unchecked")
 	public HashMap()
 	{
-		map = (Map[]) new Object[size];
+		map = new Map[size];
 		currCap = size;
 		load = defLoad;
 	}
@@ -58,14 +24,14 @@ public class HashMap<K,D>
 	@SuppressWarnings("unchecked")
 	public HashMap(int size)
 	{
-		map = (Map[]) new Object[size];
+		map = new Map[size];
 		load = defLoad;
 	}
 	
 	@SuppressWarnings("unchecked")
 	public HashMap(int size, double load)
 	{
-		map = (Map[]) new Object[size];
+		map = new Map[size];
 		currCap = size;
 		this.load = load;
 	}
@@ -76,7 +42,7 @@ public class HashMap<K,D>
 	{
 		Iterator<Map<K,D>> i = iterator();
 		int count = numPairs;
-		map = (Map[]) new Object[currCap+size];
+		map = new Map[currCap+size];
 		currCap += size;
 		numPairs = 0;
 		Map<K,D> entry = null;
@@ -102,6 +68,7 @@ public class HashMap<K,D>
 		{
 			map[bucket] = entry;
 			numPairs++;
+			//calls enlarge if the load factor is greater than the default load
 			if((float)numPairs/currCap>load)
 				enlarge();
 			return null;
@@ -128,7 +95,7 @@ public class HashMap<K,D>
 		if(map[bucket]==null)
 			return null;
 		else
-			return (D)map[bucket].getData();
+			return map[bucket].getData();
 	}
 	
 	public boolean contains(K key)
@@ -151,7 +118,7 @@ public class HashMap<K,D>
 	{
 		// This function ensures that hashCodes that differ only by
 	    // constant multiples at each bit position have a bounded
-	    // number of collisions (approximately 8 at default load factor).
+	    // number of collisions.
 		char k = (char) key;
 		k ^= (k>>>20)^(k>>>12);
 		int hashCode = k^(k>>>7)^(k>>>4);
