@@ -1,0 +1,63 @@
+/***********************************************************************\
+ * Purpose: To be able differentiate between a mammal and another animal
+ ***********************************************************************/
+package animalsHash;
+import dataStructure.HashMap;
+import java.util.Scanner;
+import java.io.File;
+import java.io.FileNotFoundException;
+
+public class DifferentiateMammal
+{
+	private String name;
+	private int hair, feathers, eggs, milk, airborne, aquatic, predator, toothed, backbone, breathes, venomous, 
+	fins, legs, tail, domestic, catsize, type;//legs set:{0,2,4,5,6,8}, type range:[1,7];
+	private Integer[] data;
+	private HashMap<String,Integer[]> animal;
+	
+	public DifferentiateMammal()
+	{
+		data = new Integer[17];
+		animal = new HashMap<String,Integer[]>();
+	}
+	/**Takes a file name and scans through the file while setting the animal names into a 
+	 * @param fileName
+	 */
+	public void readAndSetFile(String fileName)
+	{
+		Scanner inputStream = null;
+		try
+		{
+			inputStream = new Scanner(new File(fileName));
+		}
+		catch(FileNotFoundException fnf)
+		{
+			System.out.println("Error opening " + fileName);
+			System.exit(1);
+		}
+		while(inputStream.hasNextLine())
+		{
+			
+		}
+		animal.put(name, data);
+	}
+	/**Returns whether the animal is a mammal or not
+	 * Operational definition: mammal = hair, milk, and backbone
+	 * 	based of file parameters
+	 * @return
+	 */
+	public boolean isMammal()
+	{
+		if(hair==1&&milk==1&&backbone==1)
+			return true;
+		return false;
+	}
+	
+	public String toString()
+	{
+		if(isMammal()==true)
+			return name + " is a mammal.";
+		else
+			return name + " is not a mammal.";
+	}
+}
