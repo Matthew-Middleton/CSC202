@@ -1,0 +1,38 @@
+/****************************************\
+* Purpose: To be used for class HashMap()
+*****************************************/
+package dataStructure;
+
+public class Map<K,D>
+{
+	protected K key;
+	protected D data;
+	protected Map<K,D> next = null;
+	
+	public Map(K key, D data)
+	{
+		this.key = key;
+		this.data = data;
+	}
+	/**Returns the key
+	 * @return
+	 */
+	public K getKey()
+	{
+		return key;
+	}
+	/**Returns the data
+	 * @return
+	 */
+	public D getData()
+	{
+		return data;
+	}
+	/**Sets the data
+	 * @param data
+	 */
+	public void setData(D data)
+	{
+		this.data = data;
+	}
+}
