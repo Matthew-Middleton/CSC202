@@ -9,16 +9,15 @@ import java.io.FileNotFoundException;
 
 public class DifferentiateMammal
 {
-	private String name;
-	private int hair, feathers, eggs, milk, airborne, aquatic, predator, toothed, backbone, breathes, venomous, 
+	private String name, hair, feathers, eggs, milk, airborne, aquatic, predator, toothed, backbone, breathes, venomous, 
 	fins, legs, tail, domestic, catsize, type;//legs set:{0,2,4,5,6,8}, type range:[1,7];
-	private Integer[] data;
-	private HashMap<String,Integer[]> animal;
+	private String data[];
+	private HashMap<String,String[]> animal;
 	
 	public DifferentiateMammal()
 	{
-		data = new Integer[17];
-		animal = new HashMap<String,Integer[]>();
+		data = new String[17];
+		animal = new HashMap<String,String[]>();
 	}
 	/**Takes a file name and scans through the file while setting the animal names into a 
 	 * @param fileName
@@ -35,29 +34,32 @@ public class DifferentiateMammal
 			System.out.println("Error opening " + fileName);
 			System.exit(1);
 		}
+		int x = 0;
 		while(inputStream.hasNextLine())
 		{
-			
+			if(inputStream.next()==",")
+				inputStream.next();
+			if(inputStream.next()=="[A-Za-z]")
+				name += inputStream;
+			while(inputStream.next()=="[0-9]")
+			{
+				data[x] = inputStream.next();
+				x++;
+			}
+			animal.put(name, data);
 		}
-		animal.put(name, data);
+		inputStream.close();
 	}
 	/**Returns whether the animal is a mammal or not
 	 * Operational definition: mammal = hair, milk, and backbone
 	 * 	based of file parameters
 	 * @return
 	 */
-	public boolean isMammal()
+	public boolean isMammal(String key)
 	{
-		if(hair==1&&milk==1&&backbone==1)
+		String temp[] = animal.get(key);
+		if(temp[0]=="1"&&temp[3]=="1"&&temp[8]=="1")//temp[0]=hair, temp[3]=milk, temp[8]=backbone
 			return true;
 		return false;
-	}
-	
-	public String toString()
-	{
-		if(isMammal()==true)
-			return name + " is a mammal.";
-		else
-			return name + " is not a mammal.";
 	}
 }
