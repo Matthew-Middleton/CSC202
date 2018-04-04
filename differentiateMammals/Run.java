@@ -26,7 +26,8 @@ public class Run
 	private void runner()
 	{
 		DifferentiateMammal diff = new DifferentiateMammal();
-		diff.readAndSetFile("animals.txt");
+		//modify code below for where file is located on YOUR computer
+		diff.readAndSetFile("C:\\Users\\Matthew Middleton\\workspace\\CSC_202\\src\\animalsHash\\animals.txt");
 		Scanner input = new Scanner(System.in);
 		String key = input.nextLine();
 		if(key.equalsIgnoreCase("exit"))
