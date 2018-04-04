@@ -35,15 +35,9 @@ public class Run
 			System.out.println("ENDING PROGRAM");
 			System.exit(0);
 		}
-		if(diff.isMammal(key))
-			System.out.println(key + "is a mammal.");
-		else
-			System.out.println(key + "is not a mammal.");
-		System.out.println("Continue?\nEnter: y/n");
-		if(key.equalsIgnoreCase("y"))
-			runner();
+		System.out.println(diff.determine(key));
+		System.out.println("Enter another animal.");
+		runner();
 		input.close();
-		System.exit(0);
-		System.out.println("CLOSING");
 	}
 }
