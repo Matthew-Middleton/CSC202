@@ -1,18 +1,25 @@
-/***********************************************************************\
+/****************************************************************************\
  * Purpose: To be able differentiate between a mammal and another animal
- ***********************************************************************/
+ * Algorithm: Read a file line and make it a String. While reading the file
+ * convert the string at a point to a char and determine if it is Alphabetic
+ * or numerical; if alphabetical concatenate it, if numerical push it on a stack
+ ****************************************************************************/
 package animalsHash;
 import dataStructure.HashMap;
+import java.util.LinkedList;
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
 
 public class DifferentiateMammal
 {
-	private String name, hair, feathers, eggs, milk, airborne, aquatic, predator, toothed, backbone, breathes, venomous, 
-	fins, legs, tail, domestic, catsize, type;//legs set:{0,2,4,5,6,8}, type range:[1,7];
+	private String name;
+	/*array point is based on order according to the following for data: hair, feathers, eggs, milk, airborne, aquatic,
+	 *  redator, toothed, backbone, breathes, venomous, fins, legs, tail, domestic, catsize, type, legs set:{0,2,4,5,6,8}, 
+	 *  type range:[1,7];*/
 	private String data[];
 	private HashMap<String,String[]> animal;
+	private LinkedList<String> list;
 	
 	public DifferentiateMammal()
 	{
@@ -34,21 +41,40 @@ public class DifferentiateMammal
 			System.out.println("Error opening " + fileName);
 			System.exit(1);
 		}
-		int x = 0;
+		String temp = "";
+		list = new LinkedList<String>();
 		while(inputStream.hasNextLine())
 		{
-			if(inputStream.next()==",")
-				inputStream.next();
-			if(inputStream.next()=="[A-Za-z]")
-				name += inputStream;
-			while(inputStream.next()=="[0-9]")
+			if(inputStream.hasNextLine())
+				temp = inputStream.next();
+			for(int i=0; i<temp.length(); i++)
 			{
-				data[x] = inputStream.next();
+				//parse by string
+				if(Character.isAlphabetic(temp.charAt(i)))
+					name += temp;
+				if(Character.isDigit(temp.charAt(i)))
+					list.add(temp);
+			}
+			int x = 0;
+			while(!list.isEmpty())
+			{
+				data[x] = list.remove();
 				x++;
 			}
 			animal.put(name, data);
 		}
 		inputStream.close();
+	}
+	/**Implements the isMammal method
+	 * @param animal
+	 * @return
+	 */
+	public String determine(String animal)
+	{
+		if(isMammal(animal))
+			return animal + " is a mammal.";
+		else
+			return animal + " is not a mammal.";
 	}
 	/**Returns whether the animal is a mammal or not
 	 * Operational definition: mammal = hair, milk, and backbone
