@@ -6,7 +6,7 @@
  ****************************************************************************/
 package animalsHash;
 import dataStructure.HashMap;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,15 +15,16 @@ public class DifferentiateMammal
 {
 	private String name;
 	/*array point is based on order according to the following for data: hair, feathers, eggs, milk, airborne, aquatic,
-	 *  redator, toothed, backbone, breathes, venomous, fins, legs, tail, domestic, catsize, type, legs set:{0,2,4,5,6,8}, 
+	 *  redator, toothed, backbone, breathes, venomous, fins, legs, tail, domestic, catsize, type; legs set:{0,2,4,5,6,8}, 
 	 *  type range:[1,7];*/
 	private String data[];
 	private HashMap<String,String[]> animal;
-	private LinkedList<String> list;
+	private ArrayList<String> list;
 	
 	public DifferentiateMammal()
 	{
-		data = new String[17];
+		name = "";
+		data = new String[17];//size of data set
 		animal = new HashMap<String,String[]>();
 	}
 	/**Takes a file name and scans through the file while setting the animal names into a 
@@ -35,6 +36,7 @@ public class DifferentiateMammal
 		try
 		{
 			inputStream = new Scanner(new File(fileName));
+			inputStream.useDelimiter("[\\,.\\n.]");
 		}
 		catch(FileNotFoundException fnf)
 		{
@@ -42,26 +44,18 @@ public class DifferentiateMammal
 			System.exit(1);
 		}
 		String temp = "";
-		list = new LinkedList<String>();
+		list = new ArrayList<String>();
 		while(inputStream.hasNextLine())
 		{
-			if(inputStream.hasNextLine())
-				temp = inputStream.next();
-			for(int i=0; i<temp.length(); i++)
+			temp = inputStream.next();
+			list.add(temp);
+			if(list.size()==18)//size of data set per line
 			{
-				//parse by string
-				if(Character.isAlphabetic(temp.charAt(i)))
-					name += temp;
-				if(Character.isDigit(temp.charAt(i)))
-					list.add(temp);
+				name = list.get(0);
+				data = list.toArray(new String[0]);
+				animal.put(name, data);
+				list.clear();
 			}
-			int x = 0;
-			while(!list.isEmpty())
-			{
-				data[x] = list.remove();
-				x++;
-			}
-			animal.put(name, data);
 		}
 		inputStream.close();
 	}
@@ -69,9 +63,11 @@ public class DifferentiateMammal
 	 * @param animal
 	 * @return
 	 */
-	public String determine(String animal)
+	public String determine(String creature)
 	{
-		if(isMammal(animal))
+		if(!animal.nullKey(creature))
+			return "";
+		if(isMammal(creature))
 			return animal + " is a mammal.";
 		else
 			return animal + " is not a mammal.";
@@ -83,9 +79,22 @@ public class DifferentiateMammal
 	 */
 	public boolean isMammal(String key)
 	{
+		if(!animal.nullKey(key))
+		{
+			System.out.println("That animal is not in our system.");
+			return false;
+		}
 		String temp[] = animal.get(key);
+		//probably need to adjust these values
 		if(temp[0]=="1"&&temp[3]=="1"&&temp[8]=="1")//temp[0]=hair, temp[3]=milk, temp[8]=backbone
 			return true;
 		return false;
+	}
+	/**Returns the hash map associated with this object
+	 * @return
+	 */
+	public HashMap<String,String[]> getHashMap()
+	{
+		return animal;
 	}
 }
