@@ -65,7 +65,7 @@ public class DifferentiateMammal
 	 */
 	public String determine(String creature)
 	{
-		if(!animal.nullKey(creature))
+		if(!animal.contains(creature))
 			return "";
 		if(isMammal(creature))
 			return animal + " is a mammal.";
@@ -79,14 +79,14 @@ public class DifferentiateMammal
 	 */
 	public boolean isMammal(String key)
 	{
-		if(!animal.nullKey(key))
+		if(!animal.contains(key))
 		{
 			System.out.println("That animal is not in our system.");
 			return false;
 		}
+		//issue here with getting the key value
 		String temp[] = animal.get(key);
-		//probably need to adjust these values
-		if(temp[0]=="1"&&temp[3]=="1"&&temp[8]=="1")//temp[0]=hair, temp[3]=milk, temp[8]=backbone
+		if(temp[1]=="1"&&temp[4]=="1"&&temp[9]=="1")//temp[1]=hair, temp[2]=milk, temp[9]=backbone
 			return true;
 		return false;
 	}
