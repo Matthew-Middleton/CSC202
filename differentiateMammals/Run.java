@@ -19,7 +19,7 @@ public class Run
 	 */
 	private String greeting()
 	{
-		return "Hello. Type in the name of the animal that you wish to determine mammalian classification.\nEnter \"exit\" to exit the program";
+		return "Hello. Type in the name of the animal that you wish to determine whether it is a mammal or not.\nEnter \"exit\" to exit the program";
 	}
 	/**Holds the routines for the program; implemented in run()
 	 */
