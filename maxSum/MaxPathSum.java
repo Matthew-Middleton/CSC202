@@ -44,4 +44,20 @@ public class MaxPathSum
 			System.out.println(list.get(i));
 		return matrix;
 	}
+	/**Returns the sum of the maximum path sum
+	 * @param array
+	 * @return
+	 */
+	public int maxPathSumAnswer(int array[][])
+	{
+		matrix = array;
+		for(int y=matrix.length; y>=0; y--)
+			for(int x=0; x<y; x++)
+				//checks the two possible sums
+				if(matrix[x+1][y]>matrix[y+1][x+1])
+					matrix[y][x] += matrix[y+1][x];//choice 1
+				else
+					matrix[y][x] += matrix[y+1][x+1];//choice 2
+		return matrix[0][0];
+	}
 }
