@@ -33,9 +33,17 @@ public class MaxPathSum
 		{
 			System.out.println("Error with: " + fileName);
 		}
+		int y = 0;
 		while(inputStream.hasNextLine())
 		{
 			list.add(inputStream.nextInt());
+			if(list.size()==y)
+			{
+				for(int i=0; i<list.size(); i++)
+					matrix[y][i] = list.get(i);
+				list.clear();
+				y++;
+			}
 		}
 		return matrix;
 	}
@@ -49,7 +57,7 @@ public class MaxPathSum
 		for(int y=matrix.length; y>=0; y--)
 			for(int x=0; x<y; x++)
 				//checks the two possible sums
-				if(matrix[x+1][y]>matrix[y+1][x+1])
+				if(matrix[y+1][x]>matrix[y+1][x+1])
 					matrix[y][x] += matrix[y+1][x];//choice 1
 				else
 					matrix[y][x] += matrix[y+1][x+1];//choice 2
