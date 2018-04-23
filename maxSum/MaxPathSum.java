@@ -27,21 +27,16 @@ public class MaxPathSum
 		try
 		{
 			inputStream = new Scanner(new File(fileName));
-			inputStream.useDelimiter("\\s");
+			inputStream.useDelimiter("\\s+");
 		}
 		catch(FileNotFoundException fnf)
 		{
 			System.out.println("Error with: " + fileName);
 		}
-		@SuppressWarnings("unused")
-		int temp = 0;
 		while(inputStream.hasNextLine())
 		{
 			list.add(inputStream.nextInt());
-			
 		}
-		for(int i=0; i<list.size(); i++)
-			System.out.println(list.get(i));
 		return matrix;
 	}
 	/**Returns the sum of the maximum path sum
