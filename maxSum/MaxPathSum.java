@@ -4,6 +4,7 @@
  ****************************************************************************************************/
 package maxPathSum;
 import java.util.Scanner;
+import java.util.Pattern;
 import java.util.ArrayList;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -27,7 +28,8 @@ public class MaxPathSum
 		try
 		{
 			inputStream = new Scanner(new File(fileName));
-			inputStream.useDelimiter("\\s+");
+			//inputStream.useDelimiter("\\s+");
+			inputStream.useDelimiter(Pattern.compile("[\\s+.\\n.]");
 		}
 		catch(FileNotFoundException fnf)
 		{
@@ -36,6 +38,7 @@ public class MaxPathSum
 		int y = 0;
 		while(inputStream.hasNextLine())
 		{
+			
 			list.add(inputStream.nextInt());
 			if(list.size()==y)
 			{
