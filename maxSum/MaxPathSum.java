@@ -1,11 +1,11 @@
 /****************************************************************************************************\
  * Purpose: To find the path through a triangle of numbers in a text file that gives the maximum sum.
- * Algorithm: 
+ * Algorithm: Read a file and set a multi-dimensional array. Take said array and from the bottom of
+ * the array up and sum the corresponding value that it would link to.
  ****************************************************************************************************/
 package maxPathSum;
 import java.util.Scanner;
-import java.util.Pattern;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -18,7 +18,7 @@ public class MaxPathSum
 	{
 		
 	}
-	/**Reads a file and sets a stack
+	/**Reads a file and sets a 2-d array
 	 * @param fileName
 	 * @return
 	 */
@@ -28,27 +28,29 @@ public class MaxPathSum
 		try
 		{
 			inputStream = new Scanner(new File(fileName));
-			//inputStream.useDelimiter("\\s+");
-			inputStream.useDelimiter(Pattern.compile("[\\s+.\\n.]");
+			inputStream.useDelimiter("\\s+");
 		}
 		catch(FileNotFoundException fnf)
 		{
 			System.out.println("Error with: " + fileName);
 		}
-		int y = 0;
-		while(inputStream.hasNextLine())
+		
+		while(inputStream.hasNext())
 		{
-			
 			list.add(inputStream.nextInt());
-			if(list.size()==y)
-			{
-				for(int i=0; i<list.size(); i++)
-					matrix[y][i] = list.get(i);
-				list.clear();
-				y++;
-			}
 		}
+		int count = 100;
+		int size = list.size();
+		for(int i=matrix.length-1; i>0; i--)
+		{
+			size -= count;
+			for(int j=0; j<100; j++)
+				matrix[i][j] = list.remove(size);
+			count--;
+		}
+		System.out.println(list.size());
 		return matrix;
+		//need to add list elements to array
 	}
 	/**Returns the sum of the maximum path sum
 	 * @param array
@@ -57,7 +59,7 @@ public class MaxPathSum
 	public int maxPathSumAnswer(int array[][])
 	{
 		matrix = array;
-		for(int y=matrix.length; y>=0; y--)
+		for(int y=matrix.length-1; y>=0; y--)
 			for(int x=0; x<y; x++)
 				//checks the two possible sums
 				if(matrix[y+1][x]>matrix[y+1][x+1])
