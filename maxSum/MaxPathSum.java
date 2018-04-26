@@ -5,14 +5,13 @@
  ****************************************************************************************************/
 package maxPathSum;
 import java.util.Scanner;
-import java.util.LinkedList;
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.io.*;
 
 public class MaxPathSum
 {
-	private int matrix[][] = new int[100][100];
-	private LinkedList<Integer> list = new LinkedList<Integer>();
+	private Integer matrix[][] = new Integer[100][100];
+	private ArrayList<ArrayList<Integer>> list = new ArrayList<ArrayList<Integer>>();
 	
 	public MaxPathSum()
 	{
@@ -22,41 +21,49 @@ public class MaxPathSum
 	 * @param fileName
 	 * @return
 	 */
-	public int[][] readFileAndSetArray(String fileName)
+	public Integer[][] readFileAndSetArray(String fileName)
 	{
+		BufferedReader reader = null;
 		Scanner inputStream = null;
 		try
 		{
-			inputStream = new Scanner(new File(fileName));
+			reader = new BufferedReader(new FileReader(fileName));
+			inputStream = new Scanner(reader);
 			inputStream.useDelimiter("\\s+");
+			while(inputStream.hasNextLine())
+			{
+				int row[] = new int[matrix.length];
+				ArrayList<Integer> temp = new ArrayList<Integer>();
+				for(int i=0; i<matrix.length; i++)
+					row[i] = inputStream.nextInt();
+				for(int i=0; i<row.length; i++)
+					temp.add(row[i]);
+				list.add(temp);
+			}
+			/*inputStream = new Scanner(new File(fileName));
+			inputStream.useDelimiter("\\s+");*/
+			inputStream.close();
 		}
 		catch(FileNotFoundException fnf)
 		{
 			System.out.println("Error with: " + fileName);
 		}
-		
-		while(inputStream.hasNext())
-		{
-			list.add(inputStream.nextInt());
-		}
-		int count = 100;
-		int size = list.size();
+		/*int size = list.size();
 		for(int i=matrix.length-1; i>0; i--)
 		{
 			size -= count;
 			for(int j=0; j<100; j++)
 				matrix[i][j] = list.remove(size);
 			count--;
-		}
-		System.out.println(list.size());
+		}*/
+		matrix = toArray(list);
 		return matrix;
-		//need to add list elements to array
 	}
 	/**Returns the sum of the maximum path sum
 	 * @param array
 	 * @return
 	 */
-	public int maxPathSumAnswer(int array[][])
+	public int maxPathSumAnswer(Integer array[][])
 	{
 		matrix = array;
 		for(int y=matrix.length-1; y>=0; y--)
@@ -68,4 +75,16 @@ public class MaxPathSum
 					matrix[y][x] += matrix[y+1][x+1];//choice 2
 		return matrix[0][0];
 	}
+	
+	public Integer[][] toArray(ArrayList<ArrayList<Integer>> container)
+	{
+		Integer[][] array = new Integer[container.size()][];
+		for (int i = 0; i < container.size(); i++)
+		{
+		    ArrayList<Integer> row = container.get(i);
+		    array[i] = row.toArray(new Integer[row.size()]);
+		}
+		return array;
+	}
 }
+
