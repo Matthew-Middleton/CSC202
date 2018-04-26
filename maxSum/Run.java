@@ -24,8 +24,7 @@ public class Run
 	 */
 	private void runner()
 	{
-		String path = "C:\\Users\\Matthew Middleton\\workspace\\CSC_202\\src\\maxPathSum\\numTri.txt";
 		MaxPathSum max = new MaxPathSum();
-		max.readFileAndSetArray(path);
+		System.out.println("The sum of the maximum path is: " + max.maxPathSumAnswer(max.randArray()));	
 	}
 }
